@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: aquanube_web
+    ports:
+      - "8080:80"
+    volumes:
+      # Montamos el directorio actual para que los cambios se reflejen sin reconstruir
+      - .:/usr/share/nginx/html:ro
+    restart: unless-stopped
