@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <table><tbody id="tb"></tbody></table>
+  <script>
+    const readings = [{id: 1}, {id: 2}];
+    const rows = [...readings].reverse();
+    document.getElementById('tb').innerHTML = rows.map((r, i) => `<tr onclick="alert(${readings.length - 1 - i})"><td>Row ${r.id}</td></tr>`).join('');
+  </script>
+</body>
+</html>

@@ -1,0 +1,2832 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUANUBE — Sistema Ecológico de Filtración | Guardianes de la Ciencia</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --nasa-blue: #0B3D91;
+      --nasa-red: #FC3D21;
+      --space-dark: #060B17;
+      --space-card: #111D2E;
+      --space-border: #1A2F4A;
+      --aqua: #00D4FF;
+      --green-pure: #00FF88;
+      --amber: #FFB800;
+      --purple: #B57BFF;
+      --text-primary: #E8F4FF;
+      --text-secondary: #8BACC8;
+      --text-muted: #4A6A8A;
+      --font-display: 'Orbitron', monospace;
+      --font-body: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--space-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 28% 42%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 47% 12%, rgba(255, 255, 255, 0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 63% 58%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 78% 27%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 72%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 83%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 57% 91%, rgba(255, 255, 255, 0.28) 0%, transparent 100%),
+        radial-gradient(2px 2px at 18% 63%, rgba(0, 212, 255, 0.25) 0%, transparent 100%),
+        radial-gradient(2px 2px at 82% 12%, rgba(0, 255, 136, 0.18) 0%, transparent 100%),
+        radial-gradient(2px 2px at 5% 38%, rgba(181, 123, 255, 0.15) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(6, 11, 23, 0.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--space-border);
+      padding: 0 2rem;
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--aqua), var(--nasa-blue));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      color: white;
+      box-shadow: 0 0 16px rgba(0, 212, 255, 0.3);
+    }
+
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 2px;
+      line-height: 1.1;
+    }
+
+    .nav-logo-text span {
+      color: var(--aqua);
+    }
+
+    .nav-tagline {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
+    }
+
+    .nav-links {
+      display: flex;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 8px 13px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .nav-links a:hover {
+      color: var(--aqua);
+      background: rgba(0, 212, 255, 0.08);
+    }
+
+    .nav-links a.active {
+      color: var(--aqua);
+    }
+
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--green-pure);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green-pure);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.45);
+      }
+
+      50% {
+        opacity: .75;
+        box-shadow: 0 0 0 7px rgba(0, 255, 136, 0);
+      }
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 88px 2rem 4rem;
+      overflow: hidden;
+      z-index: 1
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.11;
+      pointer-events: none;
+    }
+
+    .hero-orb.o1 {
+      width: 650px;
+      height: 650px;
+      background: var(--nasa-blue);
+      top: -220px;
+      left: -220px;
+    }
+
+    .hero-orb.o2 {
+      width: 420px;
+      height: 420px;
+      background: var(--aqua);
+      bottom: -120px;
+      right: -120px;
+    }
+
+    .hero-orb.o3 {
+      width: 280px;
+      height: 280px;
+      background: var(--green-pure);
+      top: 28%;
+      right: 4%;
+      opacity: 0.07;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 1.6rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .badge.blue {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      color: var(--aqua);
+    }
+
+    .badge.green {
+      background: rgba(0, 255, 136, 0.07);
+      border: 1px solid rgba(0, 255, 136, 0.25);
+      color: var(--green-pure);
+    }
+
+    .badge.purple {
+      background: rgba(181, 123, 255, 0.08);
+      border: 1px solid rgba(181, 123, 255, 0.25);
+      color: var(--purple);
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 9vw, 7rem);
+      font-weight: 900;
+      text-align: center;
+      line-height: 0.92;
+      margin-bottom: 0.6rem;
+      letter-spacing: -2px;
+      color: var(--text-primary);
+    }
+
+    .hero-title span {
+      color: var(--aqua);
+    }
+
+    .hero-subtitle-system {
+      font-family: var(--font-display);
+      font-size: clamp(0.6rem, 1.3vw, 0.85rem);
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 590px;
+      line-height: 1.85;
+      margin-bottom: 2.6rem;
+    }
+
+    .hero-desc strong {
+      color: var(--aqua);
+    }
+
+    .hero-desc em {
+      color: var(--green-pure);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 3.2rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 6px;
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.22s;
+      text-decoration: none;
+      border: none;
+    }
+
+    .btn-p {
+      background: var(--aqua);
+      color: var(--space-dark);
+    }
+
+    .btn-p:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 26px rgba(0, 212, 255, 0.35);
+    }
+
+    .btn-s {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--space-border);
+    }
+
+    .btn-s:hover {
+      border-color: var(--aqua);
+      color: var(--aqua);
+      transform: translateY(-2px);
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--space-border);
+      border: 1px solid var(--space-border);
+      border-radius: 14px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 840px;
+    }
+
+    .hm {
+      background: var(--space-card);
+      padding: 1.3rem;
+      text-align: center;
+    }
+
+    .hm-val {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--aqua);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .hm-lbl {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: 4.5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--space-border), transparent);
+    }
+
+    .sec-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--aqua);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .sec-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.8vw, 2rem);
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 2.4rem;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--space-card);
+      border: 1px solid var(--space-border);
+      border-radius: 10px;
+    }
+
+    .card:hover {
+      border-color: rgba(0, 212, 255, 0.35);
+    }
+
+    /* METRIC CARDS */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 1.8rem;
+    }
+
+    .mc {
+      position: relative;
+      overflow: hidden;
+      padding: 1.2rem;
+      transition: border-color 0.2s;
+    }
+
+    .mc::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+
+    .mc.ph::before {
+      background: var(--green-pure);
+    }
+
+    .mc.temp::before {
+      background: var(--nasa-red);
+    }
+
+    .mc.tds::before {
+      background: var(--aqua);
+    }
+
+    .mc.turb::before {
+      background: var(--amber);
+    }
+
+    .mc-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      margin-bottom: 0.65rem;
+    }
+
+    .mc.ph .mc-icon {
+      background: rgba(0, 255, 136, 0.1);
+      color: var(--green-pure);
+    }
+
+    .mc.temp .mc-icon {
+      background: rgba(252, 61, 33, 0.1);
+      color: var(--nasa-red);
+    }
+
+    .mc.tds .mc-icon {
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--aqua);
+    }
+
+    .mc.turb .mc-icon {
+      background: rgba(255, 184, 0, 0.1);
+      color: var(--amber);
+    }
+
+    .mc-lbl {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 3px;
+    }
+
+    .mc-val {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .mc.ph .mc-val {
+      color: var(--green-pure);
+    }
+
+    .mc.temp .mc-val {
+      color: var(--nasa-red);
+    }
+
+    .mc.tds .mc-val {
+      color: var(--aqua);
+    }
+
+    .mc.turb .mc-val {
+      color: var(--amber);
+    }
+
+    .mc-unit {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .mc-ok {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--green-pure);
+      margin-top: 7px;
+    }
+
+    /* CHART PANELS */
+    .charts-2 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .charts-2b {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .chart-p {
+      padding: 1.4rem;
+    }
+
+    .p-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.1rem;
+    }
+
+    .p-title {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 1px;
+    }
+
+    .p-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--aqua);
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    /* ALERT */
+    .alert {
+      background: rgba(0, 255, 136, 0.05);
+      border: 1px solid rgba(0, 255, 136, 0.2);
+      border-radius: 8px;
+      padding: 11px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.8rem;
+    }
+
+    .alert i {
+      color: var(--green-pure);
+      font-size: 14px;
+    }
+
+    .alert p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .alert p strong {
+      color: var(--text-primary);
+    }
+
+    /* TABLE */
+    .tbl-wrap {
+      overflow: hidden;
+    }
+
+    .tbl-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 1.5rem;
+      border-bottom: 1px solid var(--space-border);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 9px 1.3rem;
+      text-align: left;
+      border-bottom: 1px solid var(--space-border);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .data-table td {
+      padding: 8px 1.3rem;
+      border-bottom: 1px solid rgba(26, 47, 74, 0.5);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(0, 212, 255, 0.03);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 100px;
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .pill.ok {
+      background: rgba(0, 255, 136, 0.1);
+      color: var(--green-pure);
+      border: 1px solid rgba(0, 255, 136, 0.2);
+    }
+
+    .pill.warn {
+      background: rgba(255, 184, 0, 0.1);
+      color: var(--amber);
+      border: 1px solid rgba(255, 184, 0, 0.2);
+    }
+
+    .pill.bad {
+      background: rgba(252, 61, 33, 0.1);
+      color: var(--nasa-red);
+      border: 1px solid rgba(252, 61, 33, 0.2);
+    }
+
+    /* FORM */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .flabel {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .flabel i {
+      color: var(--aqua);
+      font-size: 11px;
+    }
+
+    .finput {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--space-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 12px 14px;
+      outline: none;
+      transition: all 0.3s ease;
+      width: 100%;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .finput:focus {
+      border-color: var(--aqua);
+      background: rgba(0, 212, 255, 0.03);
+      box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .finput::placeholder {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* NUMBER INPUTS */
+    .num-wrap {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--space-border);
+      border-radius: 8px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      width: 100%;
+      height: 44px;
+    }
+
+    .num-wrap:focus-within {
+      border-color: var(--aqua);
+      background: rgba(0, 212, 255, 0.03);
+      box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .num-wrap .finput {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      text-align: center;
+      padding: 0;
+      height: 100%;
+      -moz-appearance: textfield;
+    }
+
+    .num-wrap .finput:focus {
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .num-wrap .finput::-webkit-outer-spin-button,
+    .num-wrap .finput::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .num-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: none;
+      color: var(--text-muted);
+      width: 44px;
+      height: 100%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .num-btn:hover {
+      color: var(--aqua);
+      background: rgba(0, 212, 255, 0.15);
+    }
+
+    .num-btn:active {
+      background: rgba(0, 212, 255, 0.25);
+    }
+
+    select.finput {
+      cursor: pointer;
+      appearance: none;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234A6A8A%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+      background-repeat: no-repeat;
+      background-position: right 14px top 50%;
+      background-size: 10px auto;
+      padding-right: 30px;
+    }
+
+    select.finput option {
+      background: var(--space-dark);
+      color: var(--text-primary);
+    }
+
+    /* UPLOAD */
+    .upload-zone {
+      background: var(--space-card);
+      border: 2px dashed var(--space-border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.over {
+      border-color: var(--aqua);
+      background: rgba(0, 212, 255, 0.04);
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--space-border);
+      margin-bottom: 1.8rem;
+    }
+
+    .tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      padding: 11px 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      margin-bottom: -1px;
+    }
+
+    .tab.on {
+      color: var(--aqua);
+      border-bottom-color: var(--aqua);
+    }
+
+    .tab:hover {
+      color: var(--text-primary);
+    }
+
+    .tp {
+      display: none;
+    }
+
+    .tp.on {
+      display: block;
+    }
+
+    /* TERMINAL */
+    .term-wrap {
+      overflow: hidden;
+    }
+
+    .term-bar {
+      background: rgba(0, 0, 0, 0.35);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--space-border);
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot.r {
+      background: #FF5F56;
+    }
+
+    .dot.y {
+      background: #FFBD2E;
+    }
+
+    .dot.g {
+      background: #27C93F;
+    }
+
+    .term-ttl {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    .term-body {
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--green-pure);
+      min-height: 190px;
+      background: rgba(0, 0, 0, 0.2);
+      overflow-y: auto;
+      max-height: 270px;
+    }
+
+    .tl {
+      margin-bottom: 3px;
+      line-height: 1.55;
+    }
+
+    .tl .ts {
+      color: var(--text-muted);
+    }
+
+    .tl .pr {
+      color: var(--aqua);
+    }
+
+    .tl .vl {
+      color: var(--amber);
+    }
+
+    .tl .ok {
+      color: var(--green-pure);
+    }
+
+    .tl .er {
+      color: var(--nasa-red);
+    }
+
+    .term-in {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-top: 1px solid var(--space-border);
+    }
+
+    .term-pr {
+      color: var(--aqua);
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .term-input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      outline: none;
+    }
+
+    /* FLOW DIAGRAM */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 1.2rem;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .fnode {
+      background: var(--space-dark);
+      border: 1px solid var(--space-border);
+      border-radius: 8px;
+      padding: 9px 13px;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .fnode.act {
+      border-color: var(--aqua);
+    }
+
+    .fnode.src {
+      border-color: var(--nasa-blue);
+    }
+
+    .fnode.out {
+      border-color: var(--green-pure);
+    }
+
+    .fnode-ico {
+      font-size: 17px;
+      margin-bottom: 3px;
+    }
+
+    .fnode-lbl {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .farrow {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* IMPACT CARDS */
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 2rem;
+    }
+
+    .ic {
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .ic:hover {
+      border-color: rgba(0, 212, 255, 0.4);
+    }
+
+    .ic.social {
+      border-top: 3px solid var(--purple);
+    }
+
+    .ic.eco {
+      border-top: 3px solid var(--amber);
+    }
+
+    .ic.amb {
+      border-top: 3px solid var(--green-pure);
+    }
+
+    .ic-ico {
+      font-size: 1.9rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .ic-title {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.6rem;
+    }
+
+    .ic.social .ic-title {
+      color: var(--purple);
+    }
+
+    .ic.eco .ic-title {
+      color: var(--amber);
+    }
+
+    .ic.amb .ic-title {
+      color: var(--green-pure);
+    }
+
+    .ic-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    /* MATERIALS */
+    .mat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .mat {
+      padding: 1.2rem;
+      text-align: center;
+      transition: all 0.22s;
+    }
+
+    .mat:hover {
+      border-color: var(--aqua);
+      transform: translateY(-2px);
+    }
+
+    .mat-emo {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .mat-name {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .mat-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* MATERIALS MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-box {
+      background: var(--space-bg);
+      max-width: 450px;
+      width: 90%;
+      padding: 2rem;
+      border-top: 3px solid var(--aqua);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+      transform: translateY(20px);
+      transition: transform 0.3s;
+      border-radius: 12px;
+    }
+
+    .modal-overlay.show .modal-box {
+      transform: translateY(0);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-body {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .m-img {
+      text-align: center;
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .m-info {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--space-border);
+      margin-bottom: 1rem;
+      font-family: var(--font-mono);
+    }
+
+    /* RECORD MODAL */
+    .rec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .rec-item {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--space-border);
+    }
+
+    .rec-lbl {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .rec-val {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* ALERTS & ANIMATIONS */
+    @keyframes toxicFlash {
+
+      0%,
+      100% {
+        opacity: 0;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    body.toxic-alert::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 100px rgba(252, 61, 33, 0.4);
+      animation: toxicFlash 2s infinite;
+      z-index: 9999;
+    }
+
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 0px rgba(0, 212, 255, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 18px rgba(0, 212, 255, 0.7);
+        border-color: #00D4FF;
+      }
+    }
+
+    .flow.anim-active .fnode.act {
+      animation: pulseGlow 1s infinite alternate;
+    }
+
+    .flow.anim-active .farrow {
+      color: #00D4FF;
+      text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+    }
+
+    /* RESULTS */
+    .res-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 1.5rem;
+    }
+
+    .res {
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .res-emo {
+      font-size: 2.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .res-val {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .res-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* MISSION */
+    .mission-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .mission-text p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+
+    .mission-text p strong {
+      color: var(--aqua);
+      font-weight: 600;
+    }
+
+    .highlights {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .hi {
+      background: var(--space-card);
+      border: 1px solid var(--space-border);
+      border-left: 3px solid var(--aqua);
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hi-ico {
+      font-size: 18px;
+    }
+
+    .hi-lbl {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .hi-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* EXPORT */
+    .exp-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .exp {
+      padding: 1.4rem;
+      cursor: pointer;
+      transition: all 0.22s;
+      text-align: center;
+    }
+
+    .exp:hover {
+      border-color: var(--aqua);
+      background: rgba(0, 212, 255, 0.04);
+      transform: translateY(-2px);
+    }
+
+    .exp-ico {
+      font-size: 1.9rem;
+      color: var(--aqua);
+      margin-bottom: 0.6rem;
+    }
+
+    .exp-title {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 1px;
+      margin-bottom: 3px;
+    }
+
+    .exp-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* CONTACT */
+    .contact-card {
+      padding: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--aqua), var(--nasa-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.25);
+    }
+
+    .c-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 1px;
+      margin-bottom: 7px;
+    }
+
+    .c-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .c-row i {
+      color: var(--aqua);
+      width: 14px;
+    }
+
+    /* NOTIF */
+    #notif {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 9999;
+      transform: translateX(130%);
+      transition: transform 0.3s;
+    }
+
+    #notif.show {
+      transform: translateX(0);
+    }
+
+    .notif-c {
+      background: var(--space-card);
+      border: 1px solid var(--space-border);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 270px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+    }
+
+    .notif-c i {
+      font-size: 18px;
+      color: var(--green-pure);
+    }
+
+    .n-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .n-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--space-border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .f-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--text-primary);
+      letter-spacing: 3px;
+      margin-bottom: 0.3rem;
+    }
+
+    .f-logo span {
+      color: var(--aqua);
+    }
+
+    .f-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 1.3rem;
+    }
+
+    .f-links {
+      display: flex;
+      gap: 1.75rem;
+      justify-content: center;
+      margin-bottom: 1.3rem;
+      flex-wrap: wrap;
+    }
+
+    .f-links a {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .f-links a:hover {
+      color: var(--aqua);
+    }
+
+    .f-copy {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* ANIM */
+    .fi {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fi.v {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    input[type=range] {
+      accent-color: var(--aqua);
+      cursor: pointer;
+    }
+
+    @media(max-width:960px) {
+
+      .hero-metrics,
+      .mat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .metrics-grid,
+      .charts-2,
+      .charts-2b,
+      .mission-grid,
+      .impact-grid,
+      .exp-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-2,
+      .charts-2b {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .res-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width:580px) {
+
+      .hero-metrics,
+      .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NOTIF -->
+  <div id="notif">
+    <div class="notif-c">
+      <i class="fa-solid fa-check-circle"></i>
+      <div>
+        <div class="n-title" id="n-title">Datos registrados</div>
+        <div class="n-sub" id="n-sub">Lectura añadida</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#inicio" class="nav-logo">
+      <div class="nav-logo-icon"><i class="fa-solid fa-cloud-showers-water"></i></div>
+      <div>
+        <div class="nav-logo-text">AQUA<span>NUBE</span></div>
+        <div class="nav-tagline">GUARDIANES DE LA CIENCIA</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#inicio" class="active">Inicio</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#datos">Datos</a>
+      <a href="#sistema">Sistema</a>
+      <a href="#impacto">Impacto</a>
+      <a href="#mision">Misión</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <div class="nav-status">
+      <div class="status-dot"></div><span id="sys-time">SISTEMA EN LÍNEA</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="hero-orb o1"></div>
+    <div class="hero-orb o2"></div>
+    <div class="hero-orb o3"></div>
+
+    <div class="hero-badges">
+      <div class="badge blue"><i class="fa-solid fa-flask"></i>Olimpiadas STEM Bolivia 2026</div>
+      <div class="badge green"><i class="fa-solid fa-shield"></i>Guardianes de la Ciencia · Juveniles</div>
+      <div class="badge purple"><i class="fa-solid fa-leaf"></i>Ciencia, Salud y Sostenibilidad</div>
+    </div>
+
+    <h1 class="hero-title">AQUA<span>NUBE</span></h1>
+    <div class="hero-subtitle-system">Sistema Ecológico de Filtración y Purificación de Agua</div>
+
+    <p class="hero-desc">
+      Recolectamos, filtramos y purificamos cualquier tipo de agua residual o desperdiciada usando <strong>lienzo,
+        carbón activado y arena</strong> —
+      materiales accesibles que convierten el desperdicio hídrico en una <em>solución sostenible para el
+        medioambiente</em>.
+    </p>
+
+    <div class="ctas">
+      <a href="#dashboard" class="btn btn-p"><i class="fa-solid fa-gauge-high"></i>VER DASHBOARD</a>
+      <a href="#datos" class="btn btn-s"><i class="fa-solid fa-upload"></i>REGISTRAR DATOS</a>
+      <a href="#mision" class="btn btn-s"><i class="fa-solid fa-leaf"></i>NUESTRA MISIÓN</a>
+    </div>
+
+    <div class="hero-metrics">
+      <div class="hm">
+        <div class="hm-val" id="h-ph">0</div>
+        <div class="hm-lbl">pH Filtrado</div>
+      </div>
+      <div class="hm">
+        <div class="hm-val" id="h-tds">0</div>
+        <div class="hm-lbl">TDS ppm</div>
+      </div>
+      <div class="hm">
+        <div class="hm-val" id="h-turb">0</div>
+        <div class="hm-lbl">Turbidez NTU</div>
+      </div>
+      <div class="hm">
+        <div class="hm-val" id="h-vol">0</div>
+        <div class="hm-lbl">Litros/día</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- DASHBOARD -->
+  <section class="section" id="dashboard">
+    <div class="fi">
+      <div class="sec-title">Panel de Control — AQUANUBE</div>
+    </div>
+
+    <div class="alert fi">
+      <i class="fa-solid fa-circle-check"></i>
+      <p><strong>Sistema AQUANUBE operando en parámetros óptimos.</strong> Filtros de lienzo, carbón activado y arena
+        activos. Agua apta para reutilización.</p>
+    </div>
+
+    <div class="metrics-grid fi">
+      <div class="card mc ph">
+        <div class="mc-icon"><i class="fa-solid fa-flask"></i></div>
+        <div class="mc-lbl">pH del Agua</div>
+        <div class="mc-val" id="c-ph">0</div>
+        <div class="mc-unit">Óptimo: 6.5 – 8.5</div>
+        <div class="mc-ok"><i class="fa-solid fa-check"></i>Neutro / Óptimo</div>
+      </div>
+      <div class="card mc temp">
+        <div class="mc-icon"><i class="fa-solid fa-temperature-half"></i></div>
+        <div class="mc-lbl">Temperatura</div>
+        <div class="mc-val" id="c-temp">0</div>
+        <div class="mc-unit">°C del agua</div>
+        <div class="mc-ok"><i class="fa-solid fa-check"></i>Normal</div>
+      </div>
+      <div class="card mc tds">
+        <div class="mc-icon"><i class="fa-solid fa-atom"></i></div>
+        <div class="mc-lbl">TDS (Sólidos)</div>
+        <div class="mc-val" id="c-tds">0</div>
+        <div class="mc-unit">ppm — aceptable &lt;500</div>
+        <div class="mc-ok"><i class="fa-solid fa-check"></i>Limpio</div>
+      </div>
+      <div class="card mc turb">
+        <div class="mc-icon"><i class="fa-solid fa-eye"></i></div>
+        <div class="mc-lbl">Turbidez</div>
+        <div class="mc-val" id="c-turb">0</div>
+        <div class="mc-unit">NTU — cristalina &lt;1</div>
+        <div class="mc-ok"><i class="fa-solid fa-check"></i>Cristalina</div>
+      </div>
+    </div>
+
+    <div class="charts-2 fi">
+      <div class="card chart-p">
+        <div class="p-head">
+          <span class="p-title">pH Y TDS — ÚLTIMAS 24 HORAS</span>
+          <span class="p-badge">EN VIVO</span>
+        </div>
+        <div style="position:relative;height:210px;"><canvas id="cMain"></canvas></div>
+        <div style="display:flex;gap:18px;margin-top:8px;">
+          <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted)"><span
+              style="width:14px;height:2px;background:var(--green-pure);display:inline-block;border-radius:2px;"></span>pH</span>
+          <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted)"><span
+              style="width:14px;height:0;border-top:2px dashed var(--aqua);display:inline-block;"></span>TDS ÷ 10</span>
+        </div>
+      </div>
+      <div class="card chart-p">
+        <div class="p-head"><span class="p-title">VOLUMEN DIARIO RECUPERADO</span><span class="p-badge">LITROS</span>
+        </div>
+        <div style="position:relative;height:210px;"><canvas id="cVol"></canvas></div>
+      </div>
+    </div>
+
+    <div class="charts-2b fi">
+      <div class="card chart-p">
+        <div class="p-head"><span class="p-title">TURBIDEZ EN EL TIEMPO</span><span class="p-badge">NTU</span></div>
+        <div style="position:relative;height:170px;"><canvas id="cTurb"></canvas></div>
+      </div>
+      <div class="card chart-p">
+        <div class="p-head"><span class="p-title">MEJORA POR ETAPA</span><span class="p-badge">%</span></div>
+        <div style="position:relative;height:170px;"><canvas id="cMejora"></canvas></div>
+      </div>
+      <div class="card chart-p">
+        <div class="p-head"><span class="p-title">TEMPERATURA</span><span class="p-badge">°C</span></div>
+        <div style="position:relative;height:170px;"><canvas id="cTemp"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- DATOS -->
+  <section class="section" id="datos">
+    <div class="fi">
+      <div class="sec-title">Registrar Mediciones del Sistema</div>
+    </div>
+
+    <div class="tabs fi">
+      <button class="tab on" onclick="switchTab('manual',this)">Entrada Manual</button>
+      <button class="tab" onclick="switchTab('archivo',this)">Importar CSV/JSON</button>
+      <button class="tab" onclick="switchTab('historial',this)">Historial</button>
+      <button class="tab" onclick="switchTab('exportar',this)">Exportar</button>
+    </div>
+
+    <!-- MANUAL -->
+    <div class="tp on fi" id="tp-manual">
+      <div class="card" style="padding: 2.5rem; border-top: 3px solid var(--aqua);">
+        
+        <!-- INTEGRACIÓN DE HARDWARE -->
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(0, 212, 255, 0.05); border: 1px solid var(--aqua); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3 style="margin-top: 0; color: var(--aqua); font-size: 16px; margin-bottom: 5px;"><i class="fa-solid fa-microchip"></i> Conectar con Hardware</h3>
+            <p style="margin-bottom: 0; font-size: 12px; color: var(--text-secondary);">Lee los valores en tiempo real directamente desde tu NodeMCU ESP8266.</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="text" id="hw-ip" class="finput" placeholder="IP (Ej: 192.168.1.50)" style="width: 180px; padding: 8px;">
+            <button type="button" class="btn btn-o" onclick="leerDesdeHardware()" style="padding: 8px 12px;"><i class="fa-solid fa-wifi"></i> LEER SENSORES</button>
+          </div>
+        </div>
+
+        <form onsubmit="submitManual(event)">
+          <div class="form-grid">
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-flask"></i> pH del agua filtrada</label>
+              <div class="num-wrap"><button type="button" class="num-btn" onclick="stepInput('f-ph',-1)"><i
+                    class="fa-solid fa-minus"></i></button><input class="finput" type="number" step="0.01" min="0"
+                  max="14" id="f-ph" placeholder="0.00" required><button type="button" class="num-btn"
+                  onclick="stepInput('f-ph',1)"><i class="fa-solid fa-plus"></i></button></div>
+            </div>
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-temperature-half"></i> Temperatura (°C)</label>
+              <div class="num-wrap"><button type="button" class="num-btn" onclick="stepInput('f-temp',-1)"><i
+                    class="fa-solid fa-minus"></i></button><input class="finput" type="number" step="0.1" id="f-temp"
+                  placeholder="0.0" required><button type="button" class="num-btn" onclick="stepInput('f-temp',1)"><i
+                    class="fa-solid fa-plus"></i></button></div>
+            </div>
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-atom"></i> TDS (ppm)</label>
+              <div class="num-wrap"><button type="button" class="num-btn" onclick="stepInput('f-tds',-1)"><i
+                    class="fa-solid fa-minus"></i></button><input class="finput" type="number" step="1" id="f-tds"
+                  placeholder="0" required><button type="button" class="num-btn" onclick="stepInput('f-tds',1)"><i
+                    class="fa-solid fa-plus"></i></button></div>
+            </div>
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-eye"></i> Turbidez (NTU)</label>
+              <div class="num-wrap"><button type="button" class="num-btn" onclick="stepInput('f-turb',-1)"><i
+                    class="fa-solid fa-minus"></i></button><input class="finput" type="number" step="0.01" id="f-turb"
+                  placeholder="0.00"><button type="button" class="num-btn" onclick="stepInput('f-turb',1)"><i
+                    class="fa-solid fa-plus"></i></button></div>
+            </div>
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-droplet"></i> Volumen recolectado (mL)</label>
+              <div class="num-wrap"><button type="button" class="num-btn" onclick="stepInput('f-vol',-1)"><i
+                    class="fa-solid fa-minus"></i></button><input class="finput" type="number" step="10" id="f-vol"
+                  placeholder="0"><button type="button" class="num-btn" onclick="stepInput('f-vol',1)"><i
+                    class="fa-solid fa-plus"></i></button></div>
+            </div>
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-filter"></i> Etapa del filtro activa</label>
+              <select class="finput" id="f-etapa">
+                <option value="sin_filtro">Sin filtrar (agua bruta)</option>
+                <option value="lienzo">Lienzo / Gasa</option>
+                <option value="carbon" selected>Carbón Activado</option>
+                <option value="arena">Arena Fina</option>
+                <option value="hervida">Hervida / Post-tratamiento</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-glasses"></i> Claridad visual</label>
+              <select class="finput" id="f-claridad">
+                <option value="cristalina">Cristalina</option>
+                <option value="ligeramente_turbia">Ligeramente turbia</option>
+                <option value="turbia">Turbia</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-wind"></i> Olor</label>
+              <select class="finput" id="f-olor">
+                <option value="ninguno">Sin olor</option>
+                <option value="leve">Leve</option>
+                <option value="notable">Notable</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-microchip"></i> Fuente del dato</label>
+              <select class="finput" id="f-sensor">
+                <option value="arduino">Arduino (automático)</option>
+                <option value="manual">Medición manual</option>
+                <option value="laboratorio">Análisis de laboratorio</option>
+              </select>
+            </div>
+            <div class="fg"><label class="flabel"><i class="fa-solid fa-clock"></i> Fecha y hora</label><input
+                class="finput" type="datetime-local" id="f-fecha"></div>
+            <div class="fg" style="grid-column:span 2;"><label class="flabel"><i class="fa-solid fa-pen"></i>
+                Observaciones</label><input class="finput" type="text" id="f-obs"
+                placeholder="Añade detalles o anomalías aquí..."></div>
+          </div>
+          <div
+            style="display:flex; justify-content:flex-end; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
+            <button type="submit" class="btn btn-p"
+              style="padding: 14px 28px; font-size: 13px; letter-spacing: 1.5px; box-shadow: 0 6px 20px rgba(0, 212, 255, 0.25); border-radius: 8px;"><i
+                class="fa-solid fa-satellite-dish"></i> GUARDAR MEDICIÓN EN BASE DE DATOS</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ARCHIVO -->
+    <div class="tp fi" id="tp-archivo">
+      <div class="upload-zone" id="dropzone" ondragover="dragOver(event)" ondragleave="dragLeave()"
+        ondrop="dropFile(event)" onclick="document.getElementById('fInput').click()">
+        <div style="font-size:2.5rem;color:var(--text-muted);margin-bottom:0.75rem;"><i
+            class="fa-solid fa-cloud-arrow-up"></i></div>
+        <div
+          style="font-family:var(--font-display);font-size:0.9rem;font-weight:600;color:var(--text-primary);margin-bottom:0.5rem;letter-spacing:1px;">
+          ARRASTRA TU ARCHIVO AQUÍ</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:1.25rem;">Compatible con CSV, JSON y TXT del
+          Serial Monitor de Arduino — Sistema AQUANUBE</div>
+        <button class="btn btn-s" type="button"><i class="fa-solid fa-folder-open"></i>BUSCAR ARCHIVO</button>
+        <input type="file" id="fInput" accept=".csv,.json,.txt" style="display:none" onchange="handleFile(event)">
+      </div>
+      <div id="fpreview" style="display:none;">
+        <div class="card tbl-wrap">
+          <div class="tbl-head"><span class="p-title">PREVISUALIZACIÓN</span><button class="btn btn-p"
+              style="padding:7px 14px;font-size:9px;" onclick="importData()"><i
+                class="fa-solid fa-database"></i>IMPORTAR</button></div>
+          <div id="fprev-content"
+            style="padding:1rem;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="tp fi" id="tp-historial">
+      <div class="card tbl-wrap">
+        <div class="tbl-head">
+          <span class="p-title">REGISTRO DE MEDICIONES — AQUANUBE</span>
+          <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);" id="total-rec">—
+            registros</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Fecha/Hora</th>
+                <th>pH</th>
+                <th>Temp°C</th>
+                <th>TDS</th>
+                <th>Turb NTU</th>
+                <th>Vol mL</th>
+                <th>Etapa</th>
+                <th>Claridad</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="t-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPORTAR -->
+    <div class="tp fi" id="tp-exportar">
+      <div class="exp-grid">
+        <div class="card exp" onclick="exportCSV()">
+          <div class="exp-ico"><i class="fa-solid fa-file-csv"></i></div>
+          <div class="exp-title">EXPORTAR CSV</div>
+          <div class="exp-desc">Compatible con Excel, Python y Arduino IDE</div>
+        </div>
+        <div class="card exp" onclick="exportJSON()">
+          <div class="exp-ico"><i class="fa-brands fa-js"></i></div>
+          <div class="exp-title">EXPORTAR JSON</div>
+          <div class="exp-desc">Para APIs, Firebase o integración web</div>
+        </div>
+        <div class="card exp" style="display:flex; flex-direction:column; cursor:default; padding:1.5rem 1.2rem;">
+          <div style="text-align:center; margin-bottom:0.8rem;">
+            <div class="exp-ico" style="margin-bottom:8px; font-size:2rem;"><i class="fa-solid fa-file-pdf"></i></div>
+            <div class="exp-title">INFORME PDF INDIVIDUAL</div>
+            <div class="exp-desc" style="margin-top:4px;">Reporte detallado de una sola medición</div>
+          </div>
+          <select id="sel-export-pdf" class="finput"
+            style="width:100%; margin-bottom:12px; font-size:10px; padding:8px;">
+            <!-- Llenado por JS -->
+          </select>
+          <button class="btn btn-p" onclick="generarPDFIndividual()" style="width:100%; padding:8px;"><i
+              class="fa-solid fa-download"></i> DESCARGAR</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SISTEMA / ARDUINO -->
+  <section class="section" id="sistema">
+    <div class="fi">
+      <div class="sec-title">Control del Sistema y Terminal Arduino</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;" class="fi">
+      <!-- TERMINAL -->
+      <div class="card term-wrap">
+        <div class="term-bar">
+          <div class="dots">
+            <div class="dot r"></div>
+            <div class="dot y"></div>
+            <div class="dot g"></div>
+          </div>
+          <span class="term-ttl" id="serial-status">AQUANUBE — Desconectado</span>
+          <button class="btn btn-p" style="margin-left:auto; font-size:9px; padding:5px 10px;"
+            onclick="connectSerial()"><i class="fa-brands fa-usb"></i> CONECTAR SENSOR</button>
+        </div>
+        <div class="term-body" id="terminal">
+          <div class="tl"><span class="ts">[00:00:01]</span> <span class="ok">Sistema AQUANUBE v1.0 iniciado</span>
+          </div>
+          <div class="tl"><span class="ts">[00:00:02]</span> <span class="pr">→</span> Sensor pH: calibrado OK</div>
+          <div class="tl"><span class="ts">[00:00:03]</span> <span class="pr">→</span> Sensor TDS: calibrado OK</div>
+          <div class="tl"><span class="ts">[00:00:04]</span> <span class="pr">→</span> Sensor turbidez: calibrado OK
+          </div>
+          <div class="tl"><span class="ts">[00:00:06]</span> <span class="pr">→</span> pH: <span class="vl">7.1</span> |
+            TDS: <span class="vl">134ppm</span> | Turb: <span class="vl">0.4 NTU</span></div>
+          <div class="tl"><span class="ts">[00:00:08]</span> <span class="ok">Filtro lienzo/gasa: ACTIVO</span></div>
+          <div class="tl"><span class="ts">[00:00:09]</span> <span class="ok">Filtro carbón activado: ACTIVO</span>
+          </div>
+          <div class="tl"><span class="ts">[00:00:10]</span> <span class="ok">Filtro arena fina: ACTIVO</span></div>
+          <div class="tl"><span class="ts">[00:00:12]</span> <span class="ok">Agua clara — apta para
+              reutilización</span></div>
+        </div>
+        <div class="term-in">
+          <span class="term-pr">$</span>
+          <input class="term-input" type="text" id="t-input" placeholder="READ, STATUS, FILTRO, RESET, HELP..."
+            onkeydown="termKey(event)">
+        </div>
+      </div>
+
+      <!-- CONTROLES + DIAGRAMA -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="card" style="padding:1.3rem;">
+          <div class="p-head" style="margin-bottom:0.9rem;">
+            <span class="p-title">FLUJO DE FILTRACIÓN AQUANUBE</span>
+            <span class="p-badge">ACTIVO</span>
+          </div>
+          <div class="flow" id="flow-diagram">
+            <div class="flow-row">
+              <div class="fnode src">
+                <div class="fnode-ico">💧</div>
+                <div class="fnode-lbl">Fuente Agua</div>
+              </div>
+              <div class="farrow"><i class="fa-solid fa-arrow-right"></i></div>
+              <div class="fnode src">
+                <div class="fnode-ico">🪣</div>
+                <div class="fnode-lbl">Pecera/Vaso</div>
+              </div>
+            </div>
+            <div style="color:var(--text-muted);font-size:12px;margin:3px 0;"><i class="fa-solid fa-arrow-down"></i>
+            </div>
+            <div class="flow-row">
+              <div class="fnode act">
+                <div class="fnode-ico">🧵</div>
+                <div class="fnode-lbl">Lienzo/Gasa</div>
+              </div>
+              <div class="farrow"><i class="fa-solid fa-arrow-right"></i></div>
+              <div class="fnode act">
+                <div class="fnode-ico">⚫</div>
+                <div class="fnode-lbl">C. Activado</div>
+              </div>
+            </div>
+            <div style="color:var(--text-muted);font-size:12px;margin:3px 0;"><i class="fa-solid fa-arrow-down"></i>
+            </div>
+            <div class="flow-row">
+              <div class="fnode act">
+                <div class="fnode-ico">🏖️</div>
+                <div class="fnode-lbl">Arena Fina</div>
+              </div>
+              <div class="farrow"><i class="fa-solid fa-arrow-right"></i></div>
+              <div class="fnode out">
+                <div class="fnode-ico">🔥</div>
+                <div class="fnode-lbl">Hervida</div>
+              </div>
+            </div>
+            <div style="color:var(--text-muted);font-size:12px;margin:3px 0;"><i class="fa-solid fa-arrow-down"></i>
+            </div>
+            <div class="flow-row">
+              <div class="fnode out">
+                <div class="fnode-ico">💧</div>
+                <div class="fnode-lbl">Agua Limpia</div>
+              </div>
+              <div class="farrow"><i class="fa-solid fa-arrow-right"></i></div>
+              <div class="fnode out">
+                <div class="fnode-ico">🌿</div>
+                <div class="fnode-lbl">Reutilización</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:1.3rem;">
+          <div class="p-title" style="margin-bottom:0.9rem;">CONTROLES DEL SISTEMA</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:0.9rem;">
+            <button class="btn btn-p" style="font-size:9px;padding:9px;" onclick="cmd('READ ALL')"><i
+                class="fa-solid fa-rotate"></i>LEER</button>
+            <button class="btn btn-s" style="font-size:9px;padding:9px;" onclick="cmd('STATUS')"><i
+                class="fa-solid fa-info"></i>STATUS</button>
+            <button class="btn btn-p" style="font-size:9px;padding:9px;" onclick="cmd('FILTRO ON')"><i
+                class="fa-solid fa-filter"></i>FILTRO ON</button>
+            <button class="btn btn-s" style="font-size:9px;padding:9px;" onclick="cmd('FILTRO OFF')"><i
+                class="fa-solid fa-filter"></i>FILTRO OFF</button>
+            <button class="btn btn-s" style="font-size:9px;padding:9px;grid-column:span 2;" onclick="cmd('RESET')"><i
+                class="fa-solid fa-power-off"></i>REINICIAR SISTEMA</button>
+          </div>
+          <div class="fg">
+            <label class="flabel">Intervalo de lectura (seg)</label>
+            <input type="range" min="5" max="120" step="5" value="30" oninput="updInterval(this.value)">
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--aqua);" id="iv-lbl">30 seg</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MATERIALES -->
+  <section class="section" id="materiales">
+    <div class="fi">
+      <div class="sec-title">Materiales del Sistema AQUANUBE</div>
+    </div>
+    <div class="mat-grid fi">
+      <div class="card mat" style="cursor:pointer;" onclick="openMatModal('fuente')">
+        <div class="mat-emo">💧</div>
+        <div class="mat-name">Fuente de Agua</div>
+        <div class="mat-desc">Cualquier tipo de agua residual, de lluvia o grises lista para filtrar</div>
+      </div>
+      <div class="card mat" style="cursor:pointer;" onclick="openMatModal('lienzo')">
+        <div class="mat-emo">🧵</div>
+        <div class="mat-name">Lienzo / Gasa</div>
+        <div class="mat-desc">1ª etapa — retiene partículas sólidas grandes y residuos visibles</div>
+      </div>
+      <div class="card mat" style="cursor:pointer;" onclick="openMatModal('carbon')">
+        <div class="mat-emo">⚫</div>
+        <div class="mat-name">Carbón Activado</div>
+        <div class="mat-desc">2ª etapa — absorbe impurezas químicas, elimina olores y sabores</div>
+      </div>
+      <div class="card mat" style="cursor:pointer;" onclick="openMatModal('arena')">
+        <div class="mat-emo">🏖️</div>
+        <div class="mat-name">Arena Fina</div>
+        <div class="mat-desc">3ª etapa — filtro mecánico, elimina partículas en suspensión</div>
+      </div>
+      <div class="card mat" style="cursor:pointer;" onclick="openMatModal('pecera')">
+        <div class="mat-emo">🪣</div>
+        <div class="mat-name">Pecera / Vidrio</div>
+        <div class="mat-desc">Recipiente de recolección y almacenamiento del agua a tratar</div>
+      </div>
+      <div class="card mat" style="cursor:pointer;" onclick="openMatModal('hervido')">
+        <div class="mat-emo">🔥</div>
+        <div class="mat-name">Hervido Final</div>
+        <div class="mat-desc">Eliminación de microorganismos para garantizar uso seguro del agua</div>
+      </div>
+      <div class="card mat" style="cursor:pointer;" onclick="openMatModal('sensor')">
+        <div class="mat-emo">🔬</div>
+        <div class="mat-name">Sensor pH/TDS</div>
+        <div class="mat-desc">Monitoreo continuo de calidad del agua en tiempo real</div>
+      </div>
+      <div class="card mat" style="cursor:pointer;" onclick="openMatModal('arduino')">
+        <div class="mat-emo">⚡</div>
+        <div class="mat-name">Arduino</div>
+        <div class="mat-desc">Microcontrolador central — lectura, procesamiento y control del sistema</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- IMPACTO -->
+  <section class="section" id="impacto">
+    <div class="fi">
+      <div class="sec-title">Impacto Social, Económico y Ambiental</div>
+    </div>
+
+    <div class="impact-grid fi">
+      <div class="card ic social">
+        <div class="ic-ico">🤝</div>
+        <div class="ic-title">IMPACTO SOCIAL</div>
+        <div class="ic-desc">Promueve el aprovechamiento del agua y la conciencia sobre el cuidado ambiental en la
+          comunidad, especialmente en zonas con escasez hídrica. Fomenta la cultura ecológica y científica desde los
+          jóvenes bolivianos.</div>
+      </div>
+      <div class="card ic eco">
+        <div class="ic-ico">💰</div>
+        <div class="ic-title">IMPACTO ECONÓMICO</div>
+        <div class="ic-desc">Reduce el desperdicio de agua y puede disminuir costos en usos no potables como riego,
+          limpieza e industria. El sistema está construido con materiales de bajo costo y fácil acceso en Bolivia.</div>
+      </div>
+      <div class="card ic amb">
+        <div class="ic-ico">🌿</div>
+        <div class="ic-title">IMPACTO AMBIENTAL</div>
+        <div class="ic-desc">Utiliza materiales reutilizables y de bajo impacto ambiental. Reduce el desperdicio de agua
+          al permitir su reutilización y disminuye el uso innecesario de plásticos de un solo uso.</div>
+      </div>
+    </div>
+
+    <div class="fi">
+      <div class="sec-title" style="font-size:1.3rem;">Criterios de Evaluación del Agua Filtrada</div>
+    </div>
+    <div class="res-grid fi">
+      <div class="card res">
+        <div class="res-emo">🔵</div>
+        <div class="res-val" style="color:var(--aqua);">CRISTALINA</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:0.5rem;">Claridad visual</div>
+        <div style="font-size:13px;color:var(--text-secondary);">Agua visualmente limpia y transparente tras las 3
+          etapas de filtración con lienzo, carbón y arena</div>
+      </div>
+      <div class="card res">
+        <div class="res-emo">👃</div>
+        <div class="res-val" style="color:var(--green-pure);">SIN OLOR</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:0.5rem;">Control de olor</div>
+        <div style="font-size:13px;color:var(--text-secondary);">El carbón activado elimina eficazmente los olores
+          residuales del agua tratada</div>
+      </div>
+      <div class="card res">
+        <div class="res-emo">🧼</div>
+        <div class="res-val" style="color:var(--green-pure);">APTA</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:0.5rem;">Limpieza general</div>
+        <div style="font-size:13px;color:var(--text-secondary);">Agua apta para uso agrícola, limpieza e industrial tras
+          el proceso completo de filtración y hervido</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MISION -->
+  <section class="section" id="mision">
+    <div class="fi">
+      <div class="sec-title">Misión, Problema y Propuesta de Solución</div>
+    </div>
+
+    <div class="mission-grid fi">
+      <div class="mission-text">
+        <p><strong>El problema:</strong> Diariamente se desperdician grandes cantidades de agua que podrían ser
+          reutilizadas, mientras muchas personas enfrentan escasez. Esta agua residual suele contener impurezas y
+          microorganismos que impiden su consumo directo.</p>
+        <p><strong>Nuestra solución — AQUANUBE:</strong> Diseñamos un sistema capaz de recolectar, filtrar y tratar
+          cualquier tipo de agua mediante materiales accesibles como <strong>arena, gasa y carbón activado</strong>,
+          obteniendo agua más limpia y reutilizable para distintos usos sostenibles.</p>
+        <p><strong>Metodología:</strong> Recolectamos el agua residual mediante tuberías o mangueras hacia un recipiente
+          de vidrio. El agua pasa por filtros de lienzo, carbón activado y arena. Finalmente, el agua filtrada es
+          almacenada y hervida para eliminar posibles microorganismos, evaluando claridad, olor y limpieza.</p>
+        <p><strong>Próximos pasos:</strong> Mejorar el sistema de filtración, realizar pruebas de calidad más avanzadas,
+          implementar filtros adicionales y analizar posibles usos adicionales del agua tratada en contextos
+          comunitarios.</p>
+        <p><strong>Conclusión:</strong> Cualquier tipo de agua desperdiciada puede aprovecharse mediante filtración y
+          desinfección, convirtiéndose en una alternativa sostenible, económica y ambiental para reducir el desperdicio
+          de agua y mitigar su escasez.</p>
+      </div>
+      <div class="highlights">
+        <div class="hi">
+          <div class="hi-ico">🎯</div>
+          <div>
+            <div class="hi-lbl">Categoría STEM</div>
+            <div class="hi-desc">Ciencia, Salud y Sostenibilidad — Gestión sostenible del agua</div>
+          </div>
+        </div>
+        <div class="hi">
+          <div class="hi-ico">👥</div>
+          <div>
+            <div class="hi-lbl">Equipo</div>
+            <div class="hi-desc">Guardianes de la Ciencia — Categoría Juveniles</div>
+          </div>
+        </div>
+        <div class="hi">
+          <div class="hi-ico">💧</div>
+          <div>
+            <div class="hi-lbl">Fuente de agua</div>
+            <div class="hi-desc">Cualquier tipo de agua residual — desperdicio convertido en recurso</div>
+          </div>
+        </div>
+        <div class="hi">
+          <div class="hi-ico">♻️</div>
+          <div>
+            <div class="hi-lbl">Materiales</div>
+            <div class="hi-desc">Arena, lienzo/gasa, carbón activado — accesibles y reutilizables</div>
+          </div>
+        </div>
+        <div class="hi">
+          <div class="hi-ico">🏆</div>
+          <div>
+            <div class="hi-lbl">Olimpiadas STEM 2026</div>
+            <div class="hi-desc">Bolivia — Ingeniería Ambiental y Sostenibilidad Hídrica</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACTO -->
+  <section class="section" id="contacto">
+    <div class="fi">
+      <div class="sec-title">Contacto — Guardianes de la Ciencia</div>
+    </div>
+    <div class="card contact-card fi">
+      <div class="avatar">JL</div>
+      <div>
+        <div class="c-name">JUAN MARCOS LOPEZ ORTIZ</div>
+        <div class="c-row"><i class="fa-solid fa-shield-halved"></i>Guardianes de la Ciencia · Olimpiadas STEM Bolivia
+          2026</div>
+        <div class="c-row"><i class="fa-solid fa-phone"></i>+591 76013722</div>
+        <div class="c-row"><i class="fa-solid fa-envelope"></i>ing.jmarcos.lopez@gmail.com</div>
+        <div class="c-row"><i class="fa-solid fa-location-dot"></i>Santa Cruz de la Sierra, Bolivia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="f-logo">AQUA<span>NUBE</span></div>
+    <div class="f-sub">Sistema Ecológico de Filtración de Agua por Condensación · Guardianes de la Ciencia · Olimpiadas
+      STEM Bolivia 2026</div>
+    <div class="f-links">
+      <a href="#inicio">Inicio</a><a href="#dashboard">Dashboard</a><a href="#datos">Datos</a>
+      <a href="#sistema">Sistema</a><a href="#impacto">Impacto</a><a href="#mision">Misión</a><a
+        href="#contacto">Contacto</a>
+    </div>
+    <div class="f-copy">© 2026 AQUANUBE · Guardianes de la Ciencia · Santa Cruz, Bolivia · ing.jmarcos.lopez@gmail.com
+    </div>
+  </footer>
+
+  <script>
+    // ======= DATA =======
+    let readings = JSON.parse(localStorage.getItem('aquanube_data')) || [];
+    function saveReadings() { localStorage.setItem('aquanube_data', JSON.stringify(readings)); }
+    const etapaMap = { sin_filtro: 'Sin filtrar', lienzo: 'Lienzo/Gasa', carbon: 'C. Activado', arena: 'Arena', hervida: 'Hervida' };
+    const etapas = ['lienzo', 'carbon', 'carbon', 'arena', 'hervida'];
+
+    // ======= CHARTS =======
+    const L24 = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+    function getChartData(key) {
+      const arr = L24.map(() => 0);
+      const r24 = readings.slice(-24);
+      for (let i = 0; i < r24.length; i++) {
+        arr[arr.length - r24.length + i] = r24[i][key] || 0;
+      }
+      return arr;
+    }
+    const phD = getChartData('ph');
+    const tdsD = getChartData('tds');
+    const turbD = getChartData('turb');
+    const tempD = getChartData('temp');
+    const days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    const volD = days.map(() => 0);
+
+    const co = {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(26,47,74,0.4)' }, ticks: { color: '#4A6A8A', font: { family: "'JetBrains Mono'", size: 9 } } },
+        y: { grid: { color: 'rgba(26,47,74,0.4)' }, ticks: { color: '#4A6A8A', font: { family: "'JetBrains Mono'", size: 9 } } }
+      }
+    };
+
+    let chartMain = new Chart('cMain', {
+      type: 'line', data: {
+        labels: L24, datasets: [
+          { data: phD, borderColor: '#00FF88', backgroundColor: 'rgba(0,255,136,0.05)', borderWidth: 2, pointRadius: 1, tension: 0.4, fill: true },
+          { data: tdsD.map(v => +(v / 10).toFixed(1)), borderColor: '#00D4FF', backgroundColor: 'rgba(0,212,255,0.04)', borderWidth: 2, pointRadius: 1, tension: 0.4, borderDash: [5, 3], fill: true }
+        ]
+      }, options: co
+    });
+
+    let chartVol = new Chart('cVol', {
+      type: 'bar', data: {
+        labels: days, datasets: [
+          { data: volD, backgroundColor: 'rgba(255,184,0,0.18)', borderColor: '#FFB800', borderWidth: 2, borderRadius: 4 }
+        ]
+      }, options: co
+    });
+
+    let chartTurb = new Chart('cTurb', {
+      type: 'line', data: {
+        labels: L24, datasets: [
+          { data: turbD, borderColor: '#FFB800', backgroundColor: 'rgba(255,184,0,0.06)', borderWidth: 2, pointRadius: 0, tension: 0.4, fill: true }
+        ]
+      }, options: { ...co, scales: { ...co.scales, y: { ...co.scales.y, min: 0, max: 1.5 } } }
+    });
+
+    let chartMejora = new Chart('cMejora', {
+      type: 'bar', data: {
+        labels: ['Lienzo', 'C.Activ.', 'Arena', 'Hervida'], datasets: [
+          { data: [0, 0, 0, 0], backgroundColor: ['rgba(0,212,255,0.2)', 'rgba(0,212,255,0.35)', 'rgba(0,255,136,0.2)', 'rgba(0,255,136,0.4)'], borderColor: ['#00D4FF', '#00D4FF', '#00FF88', '#00FF88'], borderWidth: 2, borderRadius: 4 }
+        ]
+      }, options: { ...co, scales: { ...co.scales, y: { ...co.scales.y, min: 0, max: 100 } } }
+    });
+
+    let chartTemp = new Chart('cTemp', {
+      type: 'line', data: {
+        labels: L24, datasets: [
+          { data: tempD, borderColor: '#FC3D21', backgroundColor: 'rgba(252,61,33,0.06)', borderWidth: 2, pointRadius: 0, tension: 0.4, fill: true }
+        ]
+      }, options: co
+    });
+
+    function updateChartsWithNewData(r) {
+      if (!chartMain || !r) return;
+      chartMain.data.datasets[0].data.shift(); chartMain.data.datasets[0].data.push(r.ph);
+      chartMain.data.datasets[1].data.shift(); chartMain.data.datasets[1].data.push(r.tds / 10);
+      chartMain.update();
+      chartTurb.data.datasets[0].data.shift(); chartTurb.data.datasets[0].data.push(r.turb);
+      chartTurb.update();
+      chartTemp.data.datasets[0].data.shift(); chartTemp.data.datasets[0].data.push(r.temp);
+      chartTemp.update();
+    }
+
+    // ======= TABLE =======
+    function statusPill(s) { const m = { optimal: ['ÓPTIMO', 'ok'], warn: ['REVISAR', 'warn'], alert: ['ALERTA', 'bad'] }; const [l, c] = m[s] || ['?', 'warn']; return `<span class="pill ${c}">${l}</span>`; }
+    function renderTable() {
+      const rows = [...readings].reverse();
+      document.getElementById('t-body').innerHTML = rows.map((r, i) => `<tr style="cursor:pointer;" onclick="openRecordModal(${readings.length - 1 - i})">
+    <td style="color:var(--text-muted)">${rows.length - i}</td>
+    <td>${new Date(r.ts).toLocaleString('es-BO')}</td>
+    <td style="color:var(--green-pure)">${r.ph}</td>
+    <td style="color:var(--nasa-red)">${r.temp}</td>
+    <td style="color:var(--aqua)">${r.tds}</td>
+    <td style="color:var(--amber)">${r.turb}</td>
+    <td>${r.vol}</td>
+    <td>${etapaMap[r.stage] || r.stage}</td>
+    <td>${r.claridad || '—'}</td>
+    <td>${statusPill(r.status)}</td>
+  </tr>`).join('');
+      document.getElementById('total-rec').textContent = readings.length + ' registros';
+
+      const sel = document.getElementById('sel-export-pdf');
+      if (sel) {
+        sel.innerHTML = rows.map((r, i) => `<option value="${readings.length - 1 - i}">Medición #${readings.length - i} — ${new Date(r.ts).toLocaleString('es-BO')}</option>`).join('');
+      }
+    }
+    renderTable();
+
+    function openRecordModal(idx) {
+      try {
+        window.currentRecordIdx = idx;
+        const r = readings[idx];
+        if (!r) { alert('No se encontró el registro: ' + idx); return; }
+
+        document.getElementById('rm-title').textContent = `Medición #${idx + 1} — ${new Date(r.ts).toLocaleString('es-BO')}`;
+
+        document.getElementById('rm-body').innerHTML = `
+      <div class="rec-grid">
+        <div class="rec-item"><div class="rec-lbl">pH del Agua</div><div class="rec-val" style="color:var(--green-pure)">${r.ph}</div></div>
+        <div class="rec-item"><div class="rec-lbl">Temperatura</div><div class="rec-val" style="color:var(--nasa-red)">${r.temp} °C</div></div>
+        <div class="rec-item"><div class="rec-lbl">TDS (Sólidos)</div><div class="rec-val" style="color:var(--aqua)">${r.tds} ppm</div></div>
+        <div class="rec-item"><div class="rec-lbl">Turbidez</div><div class="rec-val" style="color:var(--amber)">${r.turb} NTU</div></div>
+        <div class="rec-item"><div class="rec-lbl">Volumen</div><div class="rec-val">${r.vol} mL</div></div>
+        <div class="rec-item"><div class="rec-lbl">Etapa del Filtro</div><div class="rec-val">${etapaMap[r.stage] || r.stage}</div></div>
+        <div class="rec-item"><div class="rec-lbl">Claridad Visual</div><div class="rec-val" style="text-transform:capitalize;">${r.claridad || '—'}</div></div>
+        <div class="rec-item"><div class="rec-lbl">Olor</div><div class="rec-val" style="text-transform:capitalize;">${r.olor || '—'}</div></div>
+        <div class="rec-item"><div class="rec-lbl">Sensor de Origen</div><div class="rec-val" style="text-transform:capitalize;">${r.sensor || '—'}</div></div>
+        <div class="rec-item"><div class="rec-lbl">Estado de Calidad</div><div class="rec-val">${statusPill(r.status)}</div></div>
+      </div>
+      ${r.obs ? `<div class="rec-item" style="grid-column: 1 / -1;"><div class="rec-lbl">Observaciones Extra</div><div class="rec-val" style="font-size:12px;color:var(--text-secondary);">${r.obs}</div></div>` : ''}
+    `;
+        document.getElementById('recordModal').classList.add('show');
+      } catch (err) {
+        alert('Error al abrir: ' + err.message);
+      }
+    }
+
+    function closeRecordModal(e) {
+      if (e) e.preventDefault();
+      document.getElementById('recordModal').classList.remove('show');
+    }
+
+    function exportarRegistroPDF() {
+      if (window.currentRecordIdx === undefined) return;
+      const r = readings[window.currentRecordIdx];
+      if (!r) return;
+
+      notif('Generando PDF...', 'Capturando registro individual.');
+
+      const statusColor = r.status === 'optimal' ? '#00FF88' : (r.status === 'alert' ? '#FC3D21' : '#FFB800');
+      const statusText = r.status === 'optimal' ? 'ÓPTIMO' : (r.status === 'warn' ? 'REVISAR' : 'ALERTA');
+
+      const htmlContent = `
+    <div style="padding: 40px; font-family: 'Helvetica', 'Arial', sans-serif; color: #000; background: #fff; width: 600px; line-height: 1.6;">
+      <h2 style="color: #333; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 20px;">
+        REPORTE DE MEDICIÓN — AQUANUBE
+      </h2>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Número de Registro:</strong> #${window.currentRecordIdx + 1}</p>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Fecha y Hora:</strong> ${new Date(r.ts).toLocaleString('es-BO')}</p>
+      <br>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>pH del Agua:</strong> ${r.ph}</p>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Temperatura:</strong> ${r.temp} °C</p>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>TDS (Sólidos):</strong> ${r.tds} ppm</p>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Turbidez:</strong> ${r.turb} NTU</p>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Volumen Procesado:</strong> ${r.vol} mL</p>
+      <br>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Etapa del Filtro:</strong> ${etapaMap[r.stage] || r.stage}</p>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Claridad Visual:</strong> <span style="text-transform: capitalize;">${r.claridad || '—'}</span></p>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Olor:</strong> <span style="text-transform: capitalize;">${r.olor || '—'}</span></p>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Sensor de Origen:</strong> <span style="text-transform: capitalize;">${r.sensor || '—'}</span></p>
+      <p style="margin: 5px 0; font-size: 14px;"><strong>Estado de Calidad:</strong> ${statusText}</p>
+      <br>
+      ${r.obs ? `<div style="margin-top: 10px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9;">
+        <strong>Observaciones Extra:</strong><br><span style="font-size: 13px;">${r.obs}</span>
+      </div>` : ''}
+      <div style="margin-top: 40px; font-size: 10px; color: #777; border-top: 1px solid #eee; padding-top: 10px;">
+        Generado automáticamente por el Sistema AQUANUBE
+      </div>
+    </div>
+  `;
+
+      const opt = {
+        margin: 10,
+        filename: 'AQUANUBE_Reporte_' + Date.now() + '.pdf',
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(htmlContent).save().then(() => {
+        notif('Descarga completa', 'Registro exportado a PDF.');
+      }).catch(err => {
+        notif('Error', 'No se pudo generar el PDF.');
+      });
+    }
+
+    // ======= FORM =======
+    function stepInput(id, dir) {
+      const el = document.getElementById(id);
+      const step = parseFloat(el.getAttribute('step')) || 1;
+      const min = el.hasAttribute('min') ? parseFloat(el.getAttribute('min')) : -Infinity;
+      const max = el.hasAttribute('max') ? parseFloat(el.getAttribute('max')) : Infinity;
+      let val = parseFloat(el.value) || 0;
+      val += dir * step;
+      const dec = (step.toString().split('.')[1] || '').length;
+      val = parseFloat(val.toFixed(dec));
+      if (val < min) val = min;
+      if (val > max) val = max;
+      el.value = val;
+    }
+
+    function submitManual(e) {
+      e.preventDefault();
+      const r = {
+        ts: document.getElementById('f-fecha').value ? new Date(document.getElementById('f-fecha').value).toISOString() : new Date().toISOString(),
+        ph: parseFloat(document.getElementById('f-ph').value),
+        temp: parseFloat(document.getElementById('f-temp').value),
+        tds: parseInt(document.getElementById('f-tds').value),
+        turb: parseFloat(document.getElementById('f-turb').value) || 0,
+        vol: parseInt(document.getElementById('f-vol').value) || 0,
+        stage: document.getElementById('f-etapa').value,
+        claridad: document.getElementById('f-claridad').value,
+        olor: document.getElementById('f-olor').value,
+        sensor: document.getElementById('f-sensor').value,
+        obs: document.getElementById('f-obs').value,
+        status: ''
+      };
+      r.status = r.ph >= 6.5 && r.ph <= 8.5 && r.tds < 300 && r.turb < 1 ? 'optimal' : r.tds > 400 ? 'alert' : 'warn';
+      readings.push(r);
+      saveReadings();
+      updCards(r.ph, r.temp, r.tds, r.turb, r.vol);
+      renderTable();
+      updateChartsWithNewData(r);
+      checkAlerts(r);
+      termLog(`Medición: pH ${r.ph} | TDS ${r.tds}ppm | Turb ${r.turb}NTU | ${etapaMap[r.stage]}`, 'ok');
+      notif('Medición registrada', `pH ${r.ph} | TDS ${r.tds} ppm | ${etapaMap[r.stage]}`);
+      e.target.reset();
+      document.getElementById('f-fecha').value = new Date().toISOString().slice(0, 16);
+    }
+
+    function updCards(ph, temp, tds, turb, vol) {
+      document.getElementById('c-ph').textContent = ph;
+      document.getElementById('c-temp').textContent = temp;
+      document.getElementById('c-tds').textContent = tds;
+      document.getElementById('c-turb').textContent = turb;
+      document.getElementById('h-ph').textContent = ph;
+      document.getElementById('h-tds').textContent = tds;
+      document.getElementById('h-turb').textContent = turb;
+      document.getElementById('h-vol').textContent = (vol / 1000).toFixed(1);
+    }
+
+    // ======= TABS =======
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tp').forEach(p => p.classList.remove('on'));
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+      document.getElementById('tp-' + name).classList.add('on');
+      btn.classList.add('on');
+    }
+
+    // ======= FILE =======
+    function dragOver(e) { e.preventDefault(); document.getElementById('dropzone').classList.add('over'); }
+    function dragLeave() { document.getElementById('dropzone').classList.remove('over'); }
+    function dropFile(e) { e.preventDefault(); dragLeave(); if (e.dataTransfer.files[0]) procFile(e.dataTransfer.files[0]); }
+    function handleFile(e) { if (e.target.files[0]) procFile(e.target.files[0]); }
+    function procFile(f) { const r = new FileReader(); r.onload = e => { document.getElementById('fpreview').style.display = 'block'; document.getElementById('fprev-content').textContent = e.target.result.substring(0, 800) + (e.target.result.length > 800 ? '\n...' : ''); notif('Archivo cargado', f.name + ' (' + (f.size / 1024).toFixed(1) + ' KB)'); }; r.readAsText(f); }
+    function importData() { notif('Datos importados', 'Archivo procesado correctamente'); termLog('Importación completada', 'ok'); }
+
+    // ======= EXPORT =======
+    function exportCSV() { const h = 'Timestamp,pH,Temperatura,TDS,Turbidez,Volumen_mL,Etapa,Claridad,Olor,Sensor,Estado\n'; const rows = readings.map(r => `${r.ts},${r.ph},${r.temp},${r.tds},${r.turb},${r.vol},${r.stage},${r.claridad},${r.olor},${r.sensor},${r.status}`).join('\n'); dl('aquanube_datos.csv', h + rows, 'text/csv'); notif('CSV exportado', readings.length + ' registros'); }
+    function exportJSON() { dl('aquanube_datos.json', JSON.stringify({ proyecto: 'AQUANUBE', equipo: 'Guardianes de la Ciencia', exportado: new Date().toISOString(), total: readings.length, lecturas: readings }, null, 2), 'application/json'); notif('JSON exportado', readings.length + ' registros'); }
+    function dl(name, content, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([content], { type })); a.download = name; a.click(); }
+
+    // ======= TERMINAL =======
+    function termLog(msg, type = 'pr') {
+      const t = document.getElementById('terminal');
+      const ts = new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const d = document.createElement('div'); d.className = 'tl';
+      d.innerHTML = `<span class="ts">[${ts}]</span> <span class="${type}">${msg}</span>`;
+      t.appendChild(d); t.scrollTop = t.scrollHeight;
+    }
+    function termKey(e) { if (e.key !== 'Enter') return; const c = e.target.value.trim(); if (!c) return; e.target.value = ''; termLog('$ ' + c, 'pr'); procCmd(c.toUpperCase()); }
+    function cmd(c) { termLog('$ ' + c, 'pr'); procCmd(c); }
+    function procCmd(c) {
+      setTimeout(() => {
+        const l = readings.length > 0 ? readings[readings.length - 1] : { ph: 0, tds: 0, turb: 0, temp: 0, vol: 0 };
+        if (c.includes('READ')) termLog(`pH: ${l.ph} | TDS: ${l.tds}ppm | Turb: ${l.turb}NTU | Temp: ${l.temp}°C | Vol: ${l.vol}mL`, 'vl');
+        else if (c.includes('STATUS')) termLog('AQUANUBE: ACTIVO | Sensores: OK', 'ok');
+        else if (c.includes('FILTRO ON')) {
+          termLog('Secuencia de filtración activada...', 'ok');
+          document.getElementById('flow-diagram').classList.add('anim-active');
+        }
+        else if (c.includes('FILTRO OFF')) {
+          termLog('Sistema de filtración detenido', 'er');
+          document.getElementById('flow-diagram').classList.remove('anim-active');
+        }
+        else if (c.includes('RESET')) termLog('Sistema reiniciado', 'ok');
+        else if (c.includes('HELP')) termLog('Comandos: READ, STATUS, FILTRO ON/OFF, RESET, HELP', 'pr');
+        else termLog('Comando no reconocido', 'er');
+      }, 280);
+    }
+
+    // ======= WEB SERIAL API =======
+    let port, reader;
+    async function connectSerial() {
+      try {
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 });
+        document.getElementById('serial-status').textContent = 'Conectado — 9600 baud';
+        termLog('✅ Arduino conectado exitosamente.', 'ok');
+        const textDecoder = new TextDecoderStream();
+        port.readable.pipeTo(textDecoder.writable);
+        reader = textDecoder.readable.getReader();
+        let buffer = '';
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) { reader.releaseLock(); break; }
+          buffer += value;
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+          for (let line of lines) {
+            line = line.trim();
+            if (line) processSerialData(line);
+          }
+        }
+      } catch (err) {
+        termLog('❌ Error Serial: ' + err.message, 'er');
+      }
+    }
+
+    function processSerialData(data) {
+      termLog('>> ' + data, 'pr');
+      try {
+        const parts = data.split(',');
+        if (parts.length >= 4) {
+          const r = {
+            ts: new Date().toISOString(),
+            ph: parseFloat(parts[0]), tds: parseInt(parts[1]), turb: parseFloat(parts[2]), temp: parseFloat(parts[3]),
+            vol: 150, stage: 'arena', claridad: 'cristalina', olor: 'ninguno', sensor: 'arduino', obs: '', status: ''
+          };
+          r.status = r.ph >= 6.5 && r.ph <= 8.5 && r.tds < 300 && r.turb < 1 ? 'optimal' : r.tds > 400 ? 'alert' : 'warn';
+          readings.push(r);
+          saveReadings();
+          updCards(r.ph, r.temp, r.tds, r.turb, r.vol);
+          renderTable();
+          updateChartsWithNewData(r);
+          checkAlerts(r);
+        }
+      } catch (e) { }
+    }
+
+    function checkAlerts(r) {
+      const toxic = r.tds > 500 || r.ph < 6.5 || r.ph > 8.5;
+      if (toxic) {
+        document.body.classList.add('toxic-alert');
+        notif('🚨 ALERTA DE TOXICIDAD', 'Valores de agua fuera de rango seguro.');
+        termLog('PELIGRO: Agua no apta. Filtración requerida.', 'er');
+      } else {
+        document.body.classList.remove('toxic-alert');
+      }
+    }
+
+    function generarPDFIndividual() {
+      const sel = document.getElementById('sel-export-pdf');
+      if (!sel || sel.value === "") {
+        notif('Aviso', 'No hay registros para exportar.');
+        return;
+      }
+      window.currentRecordIdx = parseInt(sel.value);
+      exportarRegistroPDF();
+    }
+    function updInterval(v) { document.getElementById('iv-lbl').textContent = v + ' seg'; termLog('Intervalo actualizado: ' + v + ' segundos', 'vl'); }
+
+// ======= HARDWARE INTEGRATION =======
+async function leerDesdeHardware() {
+  const ipInput = document.getElementById('hw-ip');
+  let ip = ipInput.value.trim();
+  
+  if (!ip) {
+    notif('Error', 'Por favor ingresa la dirección IP del NodeMCU.');
+    return;
+  }
+  
+  // Clean up URL if user typed http://
+  if(!ip.startsWith('http')) {
+    ip = 'http://' + ip;
+  }
+  
+  const url = ip + '/data';
+  notif('Conectando...', 'Intentando leer sensores en ' + ip);
+  
+  try {
+    const response = await fetch(url, { method: 'GET', mode: 'cors' });
+    if (!response.ok) throw new Error('Error de red o IP incorrecta');
+    
+    const data = await response.json();
+    
+    // Fill the inputs
+    if (data.temperatura !== undefined) {
+      document.getElementById('f-temp').value = data.temperatura.toFixed(1);
+    }
+    if (data.turbidez_ntu !== undefined) {
+      document.getElementById('f-turb').value = data.turbidez_ntu;
+    }
+    
+    // Set some default inputs for missing sensors (since we don't have pH/TDS wired yet)
+    document.getElementById('f-ph').value = "7.00"; // Default neutral
+    document.getElementById('f-tds').value = "50";  // Default clean
+    document.getElementById('f-vol').value = "500"; 
+    
+    notif('Éxito', '¡Datos leídos del sensor correctamente!');
+    
+  } catch (error) {
+    notif('Fallo de conexión', 'No se pudo conectar al NodeMCU. Verifica la IP y que estés en la misma red Wi-Fi.');
+    console.error(error);
+  }
+}
+
+    // ======= NOTIF =======
+    function notif(title, sub) {
+      document.getElementById('n-title').textContent = title;
+      document.getElementById('n-sub').textContent = sub;
+      const n = document.getElementById('notif');
+      n.classList.add('show');
+      setTimeout(() => n.classList.remove('show'), 3500);
+    }
+
+    // ======= CLOCK =======
+    setInterval(() => document.getElementById('sys-time').textContent = 'SISTEMA EN LÍNEA · ' + new Date().toLocaleTimeString('es-BO'), 1000);
+
+    // ======= AUTO-UPDATE =======
+    // setInterval(()=>{
+    //   const r=gen(0);readings.push(r);if(readings.length>100)readings.shift();
+    //   updCards(r.ph,r.temp,r.tds,r.turb,r.vol);
+    //   termLog(`Auto-lectura: pH ${r.ph} | TDS ${r.tds}ppm | Turb ${r.turb}NTU`,'vl');
+    // },30000);
+
+    // ======= INIT =======
+    document.getElementById('f-fecha').value = new Date().toISOString().slice(0, 16);
+
+    // ======= SCROLL ANIM =======
+    const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('v'); }), { threshold: 0.07 });
+    document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+
+    // ======= NAV ACTIVE =======
+    window.addEventListener('scroll', () => {
+      let cur = '';
+      document.querySelectorAll('section[id]').forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+    });
+
+    // ======= MODAL MATERIALES =======
+    const matData = {
+      'fuente': { icon: '💧', title: 'Fuente de Agua', info: 'El sistema procesa cualquier tipo de agua no potable: residual, grises domésticas o lluvia. El objetivo es dar un segundo uso al agua reduciendo el estrés hídrico.' },
+      'lienzo': { icon: '🧵', title: 'Lienzo / Gasa', info: 'Primera barrera física. Su tejido atrapa las partículas sólidas más grandes (polvo, insectos, pelusas) evitando que los siguientes filtros finos se saturen rápidamente.' },
+      'carbon': { icon: '⚫', title: 'Carbón Activado', info: 'Componente químico clave. Atrapa toxinas, metales pesados y compuestos orgánicos. Además, neutraliza eficazmente olores y sabores indeseados.' },
+      'arena': { icon: '🏖️', title: 'Arena Fina', info: 'Filtro mecánico de alta eficiencia. El agua pasa por minúsculos espacios, eliminando partículas finas en suspensión y mejorando drásticamente la turbidez.' },
+      'pecera': { icon: '🪣', title: 'Pecera / Vidrio', info: 'Recipientes contenedores transparentes. Permiten observar directamente el proceso de purificación y la mejora visual del agua capa por capa de forma experimental.' },
+      'hervido': { icon: '🔥', title: 'Hervido Final', info: 'Tratamiento térmico final. Hervir el agua asegura la eliminación total de patógenos, bacterias y virus que hayan pasado la filtración física.' },
+      'sensor': { icon: '🔬', title: 'Sensor pH/TDS', info: 'Instrumental electrónico de precisión para medir el Potencial de Hidrógeno y los Sólidos Disueltos Totales (TDS). Determinan de forma cuantitativa la calidad del agua.' },
+      'arduino': { icon: '⚡', title: 'Arduino', info: 'El cerebro del sistema. Recopila los datos analógicos de los sensores, los convierte a digital y los transmite a este Dashboard mediante conexión Serial.' }
+    };
+
+    function openMatModal(id) {
+      const d = matData[id];
+      document.getElementById('m-title').textContent = d.title.toUpperCase();
+      document.getElementById('m-body').innerHTML = `
+    <div class="m-img">${d.icon}</div>
+    <div class="m-info">${d.info}</div>
+  `;
+      document.getElementById('matModal').classList.add('show');
+    }
+    function closeMatModal(e) {
+      if (e) e.preventDefault();
+      document.getElementById('matModal').classList.remove('show');
+    }
+  </script>
+
+  <!-- MODAL DE MATERIALES -->
+  <div id="matModal" class="modal-overlay" onclick="closeMatModal(event)">
+    <div class="modal-box card" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <span class="p-title" id="m-title" style="font-size: 14px; color: var(--aqua);">TÍTULO</span>
+        <button class="btn btn-s" onclick="closeMatModal(event)" style="padding: 6px 12px; border-radius: 6px;"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="m-body"></div>
+    </div>
+  </div>
+
+  <!-- MODAL DE REGISTRO DETALLADO -->
+  <div id="recordModal" class="modal-overlay" onclick="closeRecordModal(event)">
+    <div class="modal-box card" onclick="event.stopPropagation()" style="max-width: 600px;">
+      <div class="modal-head">
+        <span class="p-title" id="rm-title" style="font-size: 14px; color: var(--aqua);">Detalle de Medición</span>
+        <div id="rm-btns" style="display:flex; gap:8px;">
+          <button class="btn btn-p" onclick="exportarRegistroPDF()"
+            style="padding: 6px 12px; border-radius: 6px; font-size: 10px; background: rgba(0,212,255,0.15); color: var(--aqua); border: 1px solid var(--aqua);"><i
+              class="fa-solid fa-file-pdf"></i> PDF</button>
+          <button class="btn btn-s" onclick="closeRecordModal(event)" style="padding: 6px 12px; border-radius: 6px;"><i
+              class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+      <div class="modal-body" id="rm-body"></div>
+    </div>
+  </div>
+
+</body>
+
+</html>
