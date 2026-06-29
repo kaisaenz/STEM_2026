@@ -83,12 +83,45 @@ AQUANUBE captura y trata esta agua mediante un sistema de **4 etapas de filtraci
 
 ```
 ESTEM )!/
+├── index.html                    ← Dashboard web (página principal)
+├── assets/
+│   ├── css/
+│   │   └── styles.css            ← Estilos del dashboard (tema espacial)
+│   ├── js/
+│   │   ├── state.js              ← Datos y persistencia (localStorage)
+│   │   ├── charts.js             ← Gráficos Chart.js
+│   │   ├── hardware.js           ← Web Serial (Arduino) + lectura WiFi (ESP32)
+│   │   ├── simulation.js         ← Modo Demostración (sensores simulados en vivo)
+│   │   ├── ui.js                 ← Tabla, formulario, importar/exportar, terminal
+│   │   └── main.js               ← Arranque e inicialización
+│   └── img/                      ← logo_stem.png, equipo.png
 ├── README.md                     ← Este archivo
 ├── ARQUITECTURA.md               ← Estructura técnica y arquitectura del sistema
 ├── HARDWARE_INTEGRACION.md       ← Componentes, conexiones y código para hardware
 ├── GUIA_USO.md                   ← Manual de uso del dashboard web
-└── AQUANUBE_sitio_web.html       ← Dashboard web (archivo principal)
+├── Dockerfile                    ← Imagen nginx para servir el sitio
+└── docker-compose.yml            ← Levanta el sitio en http://localhost:8080
 ```
+
+> El dashboard pasó de un único archivo HTML a una estructura con CSS y JavaScript
+> separados por responsabilidad, más fácil de mantener.
+
+---
+
+## ▶️ Cómo Ejecutar
+
+**Opción rápida:** abre `index.html` directamente en el navegador (doble clic).
+
+**Con Docker (servidor nginx):**
+
+```bash
+docker-compose up --build
+# luego abre http://localhost:8080
+```
+
+Para ver el dashboard funcionando sin hardware, pulsa **«Modo Demostración»**
+(o el botón «Iniciar demostración en vivo» del inicio): el sistema genera lecturas
+de sensores simuladas y actualiza tarjetas, gráficos y el diagrama de filtración en vivo.
 
 ---
 
@@ -110,7 +143,8 @@ ESTEM )!/
 |---|---|
 | **HTML5** | Estructura semántica del dashboard |
 | **CSS3** | Diseño visual con variables CSS, glassmorphism, animaciones, responsive |
-| **JavaScript (Vanilla)** | Lógica del dashboard, gráficos, gestión de datos, terminal |
+| **JavaScript (Vanilla)** | Lógica del dashboard en módulos (`state`, `charts`, `hardware`, `simulation`, `ui`, `main`) |
+| **Modo Demostración** | Simulación de sensores en vivo para exponer el dashboard sin hardware conectado |
 | **Chart.js 4.4.1** | Gráficos interactivos (pH, TDS, turbidez, temperatura, volumen) |
 | **Font Awesome 6.5** | Iconografía del sistema |
 | **Google Fonts** | Tipografías: Orbitron, Space Grotesk, JetBrains Mono |

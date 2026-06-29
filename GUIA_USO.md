@@ -39,13 +39,54 @@
 
 ## 🚀 Abrir el Dashboard
 
-1. Localiza el archivo `AQUANUBE_sitio_web.html` en la carpeta del proyecto
+1. Localiza el archivo `index.html` en la carpeta del proyecto
 2. **Doble clic** sobre el archivo — se abrirá en tu navegador predeterminado
-3. El dashboard se cargará con **datos simulados** de demostración
+3. El dashboard se cargará listo para usar (con el historial guardado, si existe)
 4. ¡Listo! Ya puedes explorar todas las secciones
+
+**Alternativa con Docker** (servidor nginx):
+
+```bash
+docker-compose up --build   # luego abre http://localhost:8080
+```
 
 > [!TIP]
 > Para la mejor experiencia, usa **Google Chrome** en pantalla completa (F11). Si planeas conectar hardware real, Chrome es obligatorio para la Web Serial API.
+
+---
+
+## ▶️ Modo Demostración (exponer sin hardware)
+
+Pensado para la presentación en la olimpiada cuando **no tienes el Arduino/ESP32 conectado**.
+
+1. En el **inicio**, pulsa «Iniciar demostración en vivo», o ve al **Dashboard** y pulsa
+   el botón **«Modo Demostración»**.
+2. El badge de estado cambia a **DEMO EN VIVO** y el sistema empieza a generar lecturas
+   de sensores realistas cada pocos segundos.
+3. Verás actualizarse en vivo las **tarjetas** (pH, temperatura, TDS, turbidez), los
+   **gráficos**, la **tabla de historial** y el **diagrama de filtración**.
+4. Ajusta la velocidad con el control **«Intervalo de lectura»** en la sección Sistema.
+5. Pulsa el mismo botón (ahora «Detener demostración») para parar, o escribe `DEMO`
+   en la terminal para alternarlo.
+
+> [!NOTE]
+> Si conectas un Arduino real, la demostración se detiene automáticamente y el badge pasa
+> a **HARDWARE CONECTADO**. Las lecturas simuladas se guardan en el historial igual que las
+> reales; puedes borrarlas exportando y limpiando, o distinguirlas por su origen «demo».
+
+### Escenarios y veredicto de aptitud
+
+Para una demostración más vistosa ante el público, el Dashboard incluye:
+
+- **Escenarios de demostración:** botones que inyectan una lectura al instante —
+  *Agua cruda*, *Filtro saturado*, *Alerta de pH* y *Agua filtrada* — para mostrar en vivo
+  cómo reacciona el sistema (gráficos, alertas y veredicto).
+- **Veredicto de aptitud:** AQUANUBE evalúa cada lectura y dice si el agua es **apta para
+  consumo**. Si no lo es, **sugiere usos alternativos** (riego, limpieza, sanitarios) para
+  no desperdiciarla y **recomienda qué filtración necesita** (lienzo, carbón activado, arena,
+  hervido) según los parámetros fuera de rango.
+- **De turbio a cristalino:** comparación visual del agua de entrada (turbia) frente a la
+  salida actual, cuyo color y nitidez cambian según la turbidez medida.
 
 ---
 

@@ -1,0 +1,15 @@
+# Blueprint de Render para publicar AQUANUBE.
+# Reutiliza el Dockerfile (nginx) que ya sirve el sitio, con el ruteo de
+# /dashboard, /datos, etc. configurado en nginx.conf.
+#
+# Cómo usarlo:
+#   1. Sube el repositorio a GitHub (o GitLab).
+#   2. En Render: New > Blueprint > conecta este repositorio.
+#   3. Render detecta este archivo y crea el servicio automáticamente.
+services:
+  - type: web
+    name: aquanube
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    autoDeploy: true

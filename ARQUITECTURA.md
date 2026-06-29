@@ -48,90 +48,49 @@ graph TB
 
 ---
 
-## 📁 Estructura del Archivo Principal
+## 📁 Estructura del Proyecto
 
-El proyecto está contenido en un **archivo HTML único** (`AQUANUBE_sitio_web.html`) con CSS y JavaScript embebidos, para máxima portabilidad. Se puede abrir directamente en cualquier navegador sin servidor.
+El dashboard está organizado en **archivos separados por responsabilidad**: `index.html`
+para la estructura, un único `styles.css` para el diseño y varios módulos JavaScript que
+se cargan en orden de dependencia. Funciona tanto abriendo `index.html` directamente como
+servido por nginx (Docker).
 
 ```
-AQUANUBE_sitio_web.html (59 KB, 1016 líneas)
+index.html ......................... Estructura HTML (head + secciones + modales)
+│   ├── <head>: fuentes, Font Awesome, Chart.js, html2pdf, styles.css
+│   └── <body>: notificación, nav, HERO, EXPLICACIÓN, DASHBOARD,
+│              DATOS, SISTEMA, MATERIALES, IMPACTO, MISIÓN, FOOTER, modales
 │
-├── <head> ..................... Líneas 1-356
-│   ├── Meta tags + SEO
-│   ├── Google Fonts (Orbitron, Space Grotesk, JetBrains Mono)
-│   ├── Font Awesome 6.5 (iconos)
-│   ├── Chart.js 4.4.1 CDN
-│   └── <style> ............... Líneas 10-355
-│       ├── Variables CSS (:root)
-│       ├── Reset + Base
-│       ├── Navegación (nav)
-│       ├── Hero Section
-│       ├── Secciones comunes
-│       ├── Tarjetas (cards)
-│       ├── Métricas (mc)
-│       ├── Gráficos (charts)
-│       ├── Alertas
-│       ├── Tablas
-│       ├── Formularios
-│       ├── Upload zone
-│       ├── Tabs
-│       ├── Terminal
-│       ├── Diagrama de flujo
-│       ├── Impacto
-│       ├── Materiales
-│       ├── Resultados
-│       ├── Misión
-│       ├── Exportar
-│       ├── Contacto
-│       ├── Notificaciones
-│       ├── Footer
-│       ├── Animaciones
-│       └── Media Queries (@960px, @580px)
+assets/css/styles.css .............. Todo el diseño (tema espacial)
+│   ├── Variables (:root), reset y base
+│   ├── Nav, hero, secciones, tarjetas, gráficos, tablas, formularios
+│   ├── Terminal, diagrama de flujo, modales, footer
+│   ├── Animaciones y media queries (@960px, @580px)
+│   └── Refinamiento 2026: barra de modo, badge de estado,
+│       flujo "en vivo", micro-interacciones, prefers-reduced-motion
 │
-├── <body> .................... Líneas 357-818
-│   ├── Notificación flotante (id="notif")
-│   ├── Navegación fija (nav)
-│   ├── HERO (id="inicio")
-│   ├── DASHBOARD (id="dashboard")
-│   │   ├── Alerta de estado
-│   │   ├── Métricas grid (pH, Temp, TDS, Turb)
-│   │   ├── Gráfico línea: pH y TDS 24h
-│   │   ├── Gráfico barras: Volumen diario
-│   │   ├── Gráfico línea: Turbidez
-│   │   ├── Gráfico barras: Mejora por etapa
-│   │   └── Gráfico línea: Temperatura
-│   ├── DATOS (id="datos")
-│   │   ├── Tab: Entrada Manual (formulario)
-│   │   ├── Tab: Importar CSV/JSON
-│   │   ├── Tab: Historial (tabla)
-│   │   └── Tab: Exportar (CSV, JSON, PDF)
-│   ├── SISTEMA (id="sistema")
-│   │   ├── Terminal simulada
-│   │   ├── Diagrama de flujo visual
-│   │   └── Controles del sistema
-│   ├── MATERIALES (id="materiales")
-│   ├── IMPACTO (id="impacto")
-│   │   ├── Social, Económico, Ambiental
-│   │   └── Resultados observados
-│   ├── MISIÓN (id="mision")
-│   ├── CONTACTO (id="contacto")
-│   └── FOOTER
+assets/js/ (módulos en orden de carga)
+│   ├── state.js ........ readings[], localStorage, etapaMap, computeStatus()
+│   ├── charts.js ....... 5 gráficos Chart.js + updateChartsWithNewData()
+│   ├── hardware.js ..... Web Serial (Arduino) + fetch al ESP32/NodeMCU
+│   ├── simulation.js ... Modo Demostración: genReading(), demoTick(),
+│   │                     start/stop/toggleDemo(), setMode()
+│   ├── ui.js ........... tabla, modales, formulario, pestañas,
+│   │                     importar/exportar (CSV/JSON/PDF), terminal, notif
+│   └── main.js ......... arranque: render inicial, reloj, scroll-spy, reveals
 │
-└── <script> .................. Líneas 820-1013
-    ├── DATA: Array readings[] + generador
-    ├── CHARTS: Configuración de 5 gráficos
-    ├── TABLE: Renderizado de historial
-    ├── FORM: Registro manual de mediciones
-    ├── TABS: Navegación por pestañas
-    ├── FILE: Drag & drop + importación
-    ├── EXPORT: CSV, JSON, PDF
-    ├── TERMINAL: Emulador de comandos
-    ├── NOTIF: Sistema de notificaciones
-    ├── CLOCK: Reloj en tiempo real
-    ├── AUTO-UPDATE: Lecturas automáticas
-    ├── INIT: Configuración inicial
-    ├── SCROLL ANIM: IntersectionObserver
-    └── NAV ACTIVE: Scroll spy
+assets/img/ ........................ logo_stem.png, equipo.png
 ```
+
+### Modo Demostración (simulación)
+
+`simulation.js` permite exponer el dashboard "en vivo" sin hardware conectado. Al activarlo,
+genera una lectura nueva cada pocos segundos (intervalo configurable con el control deslizante)
+mediante un *random walk* de valores creíbles (pH ~7.1, TDS ~134 ppm, turbidez ~0.4 NTU,
+temperatura 22–26 °C). Cada lectura entra al **mismo flujo que los datos reales**
+(`updCards → renderTable → updateChartsWithNewData → checkAlerts`), por lo que tarjetas,
+gráficos, tabla y diagrama de filtración reaccionan igual que con un sensor físico.
+La demo y el hardware son **mutuamente excluyentes**: conectar un Arduino detiene la simulación.
 
 ---
 

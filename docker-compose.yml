@@ -4,6 +4,7 @@ services:
   web:
     build: .
     container_name: aquanube_web
+    network_mode: bridge
     ports:
       - "8080:80"
     volumes:
