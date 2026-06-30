@@ -1,0 +1,10 @@
+# Dependencias del servidor
+server/node_modules/
+node_modules/
+
+# Logs y temporales
+*.log
+.DS_Store
+
+# Variables de entorno con claves (¡no subir la clave de IA!)
+.env

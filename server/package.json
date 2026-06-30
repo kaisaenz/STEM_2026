@@ -1,0 +1,13 @@
+{
+  "name": "aquanube-server",
+  "version": "1.0.0",
+  "description": "Servidor de AquaNube: sirve el sitio y hace de proxy seguro hacia la API de IA de Google (Gemini, visión).",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

@@ -1,11 +1,13 @@
-# Blueprint de Render para publicar AQUANUBE.
-# Reutiliza el Dockerfile (nginx) que ya sirve el sitio, con el ruteo de
-# /dashboard, /datos, etc. configurado en nginx.conf.
+# Blueprint de Render para publicar AquaNube.
+# Construye con el Dockerfile (servidor Node) que sirve el sitio y hace de
+# proxy seguro hacia la API gratuita de Google (Gemini, visión).
 #
 # Cómo usarlo:
 #   1. Sube el repositorio a GitHub (o GitLab).
 #   2. En Render: New > Blueprint > conecta este repositorio.
-#   3. Render detecta este archivo y crea el servicio automáticamente.
+#   3. Render detecta este archivo y crea el servicio.
+#   4. En el servicio, define la variable GEMINI_API_KEY (Settings > Environment).
+#      Consigue la clave gratis en https://aistudio.google.com/app/apikey
 services:
   - type: web
     name: aquanube
@@ -13,3 +15,9 @@ services:
     dockerfilePath: ./Dockerfile
     plan: free
     autoDeploy: true
+    envVars:
+      # La clave de IA NO se guarda en el repo: se define en el panel de Render.
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PORT
+        value: "8080"

@@ -209,6 +209,24 @@
       </div>
     </div>
 
+    <!-- ANÁLISIS POR FOTO (IA) -->
+    <div class="card chart-p fi" id="ai-panel" style="margin-bottom:1.4rem;">
+      <div class="p-head" style="margin-bottom:0.9rem;">
+        <span class="p-title">ANÁLISIS DEL AGUA POR FOTO (IA)</span>
+        <span class="p-badge">VISIÓN</span>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1rem;">Sube o toma una foto del agua y AquaNube
+        la analiza con inteligencia artificial para indicar si es apta para el consumo o qué uso darle.</p>
+      <div class="ai-controls">
+        <label class="btn btn-s ai-file-label"><i class="fa-solid fa-camera"></i> Elegir foto
+          <input type="file" id="ai-file" accept="image/*" capture="environment" onchange="aiHandleFile(this)" hidden></label>
+        <button class="btn btn-p" id="ai-analyze" onclick="aiAnalyze()" disabled><i
+            class="fa-solid fa-wand-magic-sparkles"></i> ANALIZAR CON IA</button>
+      </div>
+      <img id="ai-preview" class="ai-preview" alt="Vista previa de la foto" style="display:none;">
+      <div id="ai-result"></div>
+    </div>
+
     <div class="metrics-grid fi">
       <div class="card mc ph">
         <div class="mc-icon"><i class="fa-solid fa-flask"></i></div>
@@ -661,21 +679,20 @@
       <div class="card ic social">
         <div class="ic-ico">🤝</div>
         <div class="ic-title">IMPACTO SOCIAL</div>
-        <div class="ic-desc">Promueve el aprovechamiento del agua y la conciencia sobre el cuidado ambiental en la
-          comunidad, especialmente en zonas con escasez hídrica. Fomenta la cultura ecológica y científica desde los
-          jóvenes bolivianos.</div>
+        <div class="ic-desc">Brinda mayor seguridad al consumir agua y ayuda a las personas a tomar mejores decisiones
+          sobre su tratamiento y uso.</div>
       </div>
       <div class="card ic eco">
         <div class="ic-ico">💰</div>
         <div class="ic-title">IMPACTO ECONÓMICO</div>
-        <div class="ic-desc">Reduce el desperdicio de agua y puede disminuir costos en usos no potables como riego,
-          limpieza e industria. El sistema está construido con materiales de bajo costo y fácil acceso en Bolivia.</div>
+        <div class="ic-desc">Permite aprovechar mejor el agua disponible, reduciendo gastos en agua embotellada y
+          ayudando a prevenir costos asociados a problemas de salud causados por agua de mala calidad.</div>
       </div>
       <div class="card ic amb">
         <div class="ic-ico">🌿</div>
         <div class="ic-title">IMPACTO AMBIENTAL</div>
-        <div class="ic-desc">Utiliza materiales reutilizables y de bajo impacto ambiental. Reduce el desperdicio de agua
-          al permitir su reutilización y disminuye el uso innecesario de plásticos de un solo uso.</div>
+        <div class="ic-desc">Favorece la reutilización del agua y ayuda a reducir el uso de botellas plásticas y el
+          desperdicio de este recurso.</div>
       </div>
     </div>
 
@@ -723,9 +740,6 @@
         <p><strong>Nuestra solución — AQUANUBE:</strong> Diseñamos un sistema capaz de recolectar, filtrar y tratar
           cualquier tipo de agua mediante materiales accesibles como <strong>arena, gasa y carbón activado</strong>,
           obteniendo agua más limpia y reutilizable para distintos usos sostenibles.</p>
-        <p><strong>Metodología:</strong> Recolectamos el agua residual mediante tuberías o mangueras hacia un recipiente
-          de vidrio. El agua pasa por filtros de lienzo, carbón activado y arena. Finalmente, el agua filtrada es
-          almacenada y hervida para eliminar posibles microorganismos, evaluando claridad, olor y limpieza.</p>
         <p><strong>Próximos pasos:</strong> Mejorar el sistema de filtración, realizar pruebas de calidad más avanzadas,
           implementar filtros adicionales y analizar posibles usos adicionales del agua tratada en contextos
           comunitarios.</p>
@@ -779,7 +793,7 @@
   <section class="section fi" id="equipo" style="text-align:center;">
     <span class="sec-tag">Guardianes de la Ciencia</span>
     <div class="sec-title">Nuestro Equipo</div>
-    <img src="/assets/img/equipo.png" alt="Equipo Guardianes de la Ciencia"
+    <img src="/assets/img/equipo.png?v=2" alt="Equipo Guardianes de la Ciencia"
       style="max-width: 90%; max-height: 460px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2); border: 2px solid rgba(0, 212, 255, 0.3); object-fit: cover;">
     <p style="margin-top:1.4rem; color:var(--text-secondary); font-size:0.95rem;">Olimpiadas STEM+ Bolivia 2026 ·
       Santa Cruz de la Sierra</p>
@@ -837,6 +851,7 @@
   <script src="/assets/js/hardware.js"></script>
   <script src="/assets/js/simulation.js"></script>
   <script src="/assets/js/evaluation.js"></script>
+  <script src="/assets/js/ai.js"></script>
   <script src="/assets/js/ui.js"></script>
   <script src="/assets/js/main.js"></script>
 </body>

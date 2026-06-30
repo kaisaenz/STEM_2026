@@ -1,205 +1,163 @@
-# 🌊 AQUANUBE
+# 🌊 AquaNube
 
-## Sistema Ecológico de Filtración y Purificación de Agua
+## Sistema inteligente de análisis y reutilización del agua
 
-> **Olimpiadas STEM Bolivia 2026** · Categoría: Ciencia, Salud y Sostenibilidad
+> **Olimpiadas STEM+ Bolivia 2026** · Categoría: Ciencia, Salud y Sostenibilidad
 > **Equipo:** Guardianes de la Ciencia · Categoría Juveniles
 > **Ubicación:** Santa Cruz de la Sierra, Bolivia
 
----
-
-## 📋 Tabla de Contenidos
-
-- [Descripción del Proyecto](#-descripción-del-proyecto)
-- [Problema que Resuelve](#-problema-que-resuelve)
-- [Solución Propuesta](#-solución-propuesta)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Documentación](#-documentación)
-- [Stack Tecnológico](#-stack-tecnológico)
-- [Métricas del Sistema](#-métricas-del-sistema)
-- [Equipo](#-equipo)
-- [Licencia](#-licencia)
+> *Lo que el ojo humano no puede ver… AquaNube lo convierte en información.*
 
 ---
 
-## 🎯 Descripción del Proyecto
+## 🎯 ¿Qué es AquaNube?
 
-**AQUANUBE** es un sistema ecológico que recolecta, filtra y purifica cualquier tipo de agua residual o desperdiciada, utilizando materiales accesibles como **lienzo/gasa, carbón activado y arena fina**. El sistema transforma el desperdicio hídrico en agua reutilizable para riego, limpieza e industria, acompañado de un **dashboard web interactivo** que monitorea la calidad del agua en tiempo real.
+**AquaNube** es un sistema inteligente capaz de analizar cualquier tipo de agua midiendo su
+**pH, temperatura y turbidez**. A través de una página web muestra los resultados y ayuda a
+identificar si el agua es **apta para el consumo** o si necesita algún tipo de tratamiento.
 
-### Flujo del Sistema
+Además, si el agua no es recomendable para beber, AquaNube **propone nuevos usos** —como el
+riego de plantas o tareas de limpieza— para evitar desperdiciarla, y recomienda qué tipo de
+**filtración** necesita (lienzo/gasa, arena, carbón activado, hervido).
 
-```
-💧 Fuente de Agua (Cualquier tipo de agua residual)
-    │
-    ▼
-🪣 Recipiente de Recolección (Pecera/Vidrio)
-    │
-    ▼
-🧵 Etapa 1: Filtro de Lienzo/Gasa
-    │           └── Retiene partículas sólidas grandes
-    ▼
-⚫ Etapa 2: Carbón Activado
-    │           └── Absorbe impurezas químicas, elimina olores
-    ▼
-🏖️ Etapa 3: Arena Fina
-    │           └── Filtro mecánico, elimina partículas en suspensión
-    ▼
-🔥 Etapa 4: Hervido Final
-    │           └── Eliminación de microorganismos
-    ▼
-💧 Agua Limpia → 🌿 Lista para Reutilización
-```
+Con AquaNube no solo buscamos más seguridad al consumir agua, sino también promover el
+**uso responsable del agua**.
 
 ---
 
-## 🔴 Problema que Resuelve
+## ✨ Funcionalidades
 
-- Gran cantidad de agua residual o de lluvia es **desperdiciada diariamente**
-- Muchas personas enfrentan **escasez de agua potable**
-- El agua residual o desperdiciada contiene impurezas y microorganismos que impiden su consumo directo
-- En Santa Cruz, Bolivia, existen grandes volúmenes de agua que podrían ser reutilizados pero que simplemente se desechan
-
----
-
-## 💡 Solución Propuesta
-
-AQUANUBE captura y trata esta agua mediante un sistema de **4 etapas de filtración** con materiales económicos y reutilizables, monitoreado digitalmente por sensores conectados a un microcontrolador (Arduino/ESP32) y visualizado en un dashboard web en tiempo real.
-
-### Resultados Observados
-
-| Criterio | Resultado |
+| Función | Descripción |
 |---|---|
-| **Claridad visual** | Cristalina — agua transparente tras 3 etapas |
-| **Control de olor** | Sin olor — el carbón activado elimina residuos |
-| **Limpieza general** | Apta para riego, limpieza e industrial |
-| **pH promedio** | 7.1 (rango óptimo: 6.5 – 8.5) |
-| **TDS promedio** | 134 ppm (aceptable: <500 ppm) |
-| **Turbidez** | 0.4 NTU (cristalina: <1 NTU) |
-| **Volumen diario** | ~11.8 litros/día |
+| **Monitoreo de sensores** | pH, temperatura y turbidez (más TDS y volumen como datos adicionales) en tarjetas y gráficos en vivo. |
+| **Veredicto de aptitud** | Clasifica el agua en *apta para consumo*, *no apta pero reutilizable* o *requiere tratamiento*, con usos alternativos y filtración recomendada. |
+| **Análisis por foto (IA)** | Sube o toma una foto del agua y la inteligencia artificial (Google Gemini) recomienda su uso según lo que se ve. |
+| **Modo Demostración** | Genera lecturas de sensores simuladas en vivo para exponer el dashboard sin hardware conectado. |
+| **Escenarios de demostración** | Botones que inyectan situaciones (agua cruda, filtro saturado, alerta de pH, agua filtrada) para mostrar la reacción del sistema. |
+| **De turbio a cristalino** | Comparación visual del agua de entrada vs. la salida según la turbidez medida. |
+| **Hardware real** | Conexión por USB (Web Serial · Arduino) o WiFi (ESP32/NodeMCU). |
+| **Datos** | Registro manual, importación de CSV/JSON, historial y exportación a CSV/JSON/PDF (persiste en el navegador). |
 
 ---
 
 ## 📁 Estructura del Proyecto
 
 ```
-ESTEM )!/
-├── index.html                    ← Dashboard web (página principal)
+AquaNube/
+├── index.html                 ← Página principal (estructura)
+├── server/
+│   ├── server.js              ← Servidor Node/Express: sirve el sitio y hace
+│   │                            de proxy seguro hacia la IA (Gemini)
+│   └── package.json           ← Dependencias del servidor (express)
 ├── assets/
-│   ├── css/
-│   │   └── styles.css            ← Estilos del dashboard (tema espacial)
+│   ├── css/styles.css         ← Estilos (tema espacial)
 │   ├── js/
-│   │   ├── state.js              ← Datos y persistencia (localStorage)
-│   │   ├── charts.js             ← Gráficos Chart.js
-│   │   ├── hardware.js           ← Web Serial (Arduino) + lectura WiFi (ESP32)
-│   │   ├── simulation.js         ← Modo Demostración (sensores simulados en vivo)
-│   │   ├── ui.js                 ← Tabla, formulario, importar/exportar, terminal
-│   │   └── main.js               ← Arranque e inicialización
-│   └── img/                      ← logo_stem.png, equipo.png
-├── README.md                     ← Este archivo
-├── ARQUITECTURA.md               ← Estructura técnica y arquitectura del sistema
-├── HARDWARE_INTEGRACION.md       ← Componentes, conexiones y código para hardware
-├── GUIA_USO.md                   ← Manual de uso del dashboard web
-├── Dockerfile                    ← Imagen nginx para servir el sitio
-└── docker-compose.yml            ← Levanta el sitio en http://localhost:8080
+│   │   ├── state.js           ← Datos y persistencia (localStorage)
+│   │   ├── charts.js          ← Gráficos Chart.js
+│   │   ├── hardware.js        ← Web Serial (Arduino) + lectura WiFi (ESP32)
+│   │   ├── simulation.js      ← Modo Demostración (sensores simulados)
+│   │   ├── evaluation.js      ← Veredicto de aptitud + escenarios + visual claridad
+│   │   ├── ai.js              ← Análisis del agua por foto (llama al backend)
+│   │   ├── ui.js              ← Tabla, formulario, importar/exportar, terminal
+│   │   └── main.js            ← Arranque e inicialización
+│   └── img/                   ← logo_aquanube.png, logo_stem.png, equipo.png
+├── Dockerfile                 ← Imagen Node para servir el sitio + API
+├── docker-compose.yml         ← Levanta el servicio en http://localhost:8080
+├── render.yaml                ← Blueprint para desplegar en Render
+├── README.md                  ← Este archivo
+├── ARQUITECTURA.md            ← Estructura técnica y arquitectura
+├── HARDWARE_INTEGRACION.md    ← Componentes, conexiones y código de hardware
+└── GUIA_USO.md                ← Manual de uso del dashboard
 ```
-
-> El dashboard pasó de un único archivo HTML a una estructura con CSS y JavaScript
-> separados por responsabilidad, más fácil de mantener.
 
 ---
 
 ## ▶️ Cómo Ejecutar
 
-**Opción rápida:** abre `index.html` directamente en el navegador (doble clic).
-
-**Con Docker (servidor nginx):**
+### Opción A — Node directamente
 
 ```bash
-docker-compose up --build
-# luego abre http://localhost:8080
+cd server && npm install && cd ..
+GEMINI_API_KEY=tu_clave PORT=8080 node server/server.js
+# Abre http://localhost:8080
 ```
 
-Para ver el dashboard funcionando sin hardware, pulsa **«Modo Demostración»**
-(o el botón «Iniciar demostración en vivo» del inicio): el sistema genera lecturas
-de sensores simuladas y actualiza tarjetas, gráficos y el diagrama de filtración en vivo.
+### Opción B — Docker
+
+```bash
+GEMINI_API_KEY=tu_clave docker compose up --build
+# Abre http://localhost:8080
+```
+
+> El sitio funciona completo sin la clave; solo el botón **«Analizar con IA»** pedirá
+> configurar `GEMINI_API_KEY` mientras no esté definida.
 
 ---
 
-## 📚 Documentación
+## 🤖 Configurar la IA (análisis por foto)
 
-| Documento | Descripción |
-|---|---|
-| [ARQUITECTURA.md](ARQUITECTURA.md) | Arquitectura completa del sistema: frontend, backend simulado, flujo de datos, diagramas, componentes CSS, estructura JavaScript |
-| [HARDWARE_INTEGRACION.md](HARDWARE_INTEGRACION.md) | Guía exhaustiva de componentes de hardware para todos los casos, diagramas de conexión, código Arduino/ESP32, calibración, BOM completo |
-| [GUIA_USO.md](GUIA_USO.md) | Manual de usuario del dashboard: cómo registrar datos, importar archivos, exportar reportes, usar la terminal y controlar el sistema |
+El análisis por foto usa la **API gratuita de Google (Gemini)**. La clave vive solo en el
+servidor (variable de entorno) y **nunca se expone al navegador**.
+
+1. Consigue una clave gratuita en **https://aistudio.google.com/app/apikey**.
+2. Defínela como variable de entorno `GEMINI_API_KEY` (local, en `docker-compose` o en Render).
+3. (Opcional) Cambia el modelo con `GEMINI_MODEL` (por defecto `gemini-2.0-flash`).
+
+---
+
+## 🚀 Publicar en Render
+
+1. Sube el repositorio a GitHub.
+2. En **Render → New → Blueprint**, conecta el repositorio. Render detecta `render.yaml`
+   y crea el servicio web (Docker).
+3. En el servicio, define la variable **`GEMINI_API_KEY`** (Settings → Environment).
+4. Render te dará una URL pública (ej. `https://aquanube.onrender.com`).
 
 ---
 
 ## 🛠️ Stack Tecnológico
 
-### Frontend (Dashboard Web)
-
-| Tecnología | Uso |
+| Capa | Tecnología |
 |---|---|
-| **HTML5** | Estructura semántica del dashboard |
-| **CSS3** | Diseño visual con variables CSS, glassmorphism, animaciones, responsive |
-| **JavaScript (Vanilla)** | Lógica del dashboard en módulos (`state`, `charts`, `hardware`, `simulation`, `ui`, `main`) |
-| **Modo Demostración** | Simulación de sensores en vivo para exponer el dashboard sin hardware conectado |
-| **Chart.js 4.4.1** | Gráficos interactivos (pH, TDS, turbidez, temperatura, volumen) |
-| **Font Awesome 6.5** | Iconografía del sistema |
-| **Google Fonts** | Tipografías: Orbitron, Space Grotesk, JetBrains Mono |
-
-### Hardware (Sistema Físico)
-
-| Tecnología | Uso |
-|---|---|
-| **Arduino UNO R3** | Microcontrolador para conexión USB Serial |
-| **ESP32 DevKit** | Microcontrolador con WiFi integrado |
-| **Web Serial API** | Comunicación directa navegador ↔ Arduino |
-| **HTTP/JSON** | Comunicación WiFi ESP32 ↔ navegador |
-| **Sensores** | pH (PH-4502C), TDS (V1.0), Turbidez (SEN0189), Temperatura (DS18B20) |
+| **Frontend** | HTML5, CSS3 (variables, glassmorphism, animaciones), JavaScript (módulos), Chart.js 4.4.1, html2pdf, Font Awesome 6.5, Google Fonts |
+| **Backend** | Node.js + Express (sirve el sitio y hace de proxy seguro hacia la IA) |
+| **IA (visión)** | Google Gemini (`gemini-2.0-flash`, free tier) |
+| **Hardware** | Arduino UNO R3 (USB/Serial), ESP32/NodeMCU (WiFi/HTTP), sensores de pH, temperatura y turbidez |
+| **Despliegue** | Docker · Render |
 
 ---
 
-## 📊 Métricas del Sistema
+## 📊 Parámetros que mide
 
-| Parámetro | Valor Óptimo | Unidad | Sensor |
+| Parámetro | Rango óptimo | Unidad | Sensor |
 |---|---|---|---|
 | pH | 6.5 – 8.5 | — | PH-4502C |
-| TDS | < 500 | ppm | TDS Meter V1.0 |
-| Turbidez | < 1 | NTU | SEN0189 |
 | Temperatura | 20 – 30 | °C | DS18B20 |
-| Volumen | variable | mL/día | Medición manual |
+| Turbidez | < 1 | NTU | SEN0189 |
+
+*(El sistema también admite TDS y volumen como datos adicionales.)*
 
 ---
 
 ## 🌍 Impacto
 
-### Social
-Promueve el aprovechamiento del agua y la conciencia ambiental, especialmente en zonas con escasez hídrica. Fomenta la cultura científica desde los jóvenes bolivianos.
-
-### Económico
-Reduce el desperdicio de agua con materiales de bajo costo y fácil acceso en Bolivia. Puede disminuir costos en usos no potables.
-
-### Ambiental
-Utiliza materiales reutilizables, reduce el desperdicio de agua y disminuye el uso de plásticos de un solo uso.
+- **Social:** brinda mayor seguridad al consumir agua y ayuda a las personas a tomar mejores
+  decisiones sobre su tratamiento y uso.
+- **Económico:** permite aprovechar mejor el agua disponible, reduciendo gastos en agua
+  embotellada y ayudando a prevenir costos por problemas de salud causados por agua de mala calidad.
+- **Ambiental:** favorece la reutilización del agua y ayuda a reducir el uso de botellas
+  plásticas y el desperdicio de este recurso.
 
 ---
 
 ## 👥 Equipo
 
-| Miembro | Rol | Contacto |
-|---|---|---|
-| **Juan Marcos Lopez Ortiz** | Líder del proyecto | ing.jmarcos.lopez@gmail.com |
-
-- **Teléfono:** +591 76013722
-- **Ubicación:** Santa Cruz de la Sierra, Bolivia
-- **Organización:** Guardianes de la Ciencia
+**Guardianes de la Ciencia** — Olimpiadas STEM+ Bolivia 2026, Santa Cruz de la Sierra.
 
 ---
 
 ## 📄 Licencia
 
-Proyecto desarrollado para las **Olimpiadas STEM Bolivia 2026** — Categoría Ciencia, Salud y Sostenibilidad.
+Proyecto desarrollado para las **Olimpiadas STEM+ Bolivia 2026** — Categoría Ciencia, Salud y Sostenibilidad.
 
-© 2026 AQUANUBE · Guardianes de la Ciencia · Santa Cruz, Bolivia
+© 2026 AquaNube · Guardianes de la Ciencia · Santa Cruz, Bolivia

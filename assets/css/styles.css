@@ -1928,6 +1928,31 @@
     .clarity-stages { display: flex; gap: 5px; font-size: 17px; }
     .clarity-arrow { color: var(--aqua); font-size: 18px; }
 
+    /* ----- Análisis por foto (IA) ----- */
+    .ai-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .ai-file-label { cursor: pointer; }
+    .ai-preview {
+      display: block;
+      max-width: 280px;
+      width: 100%;
+      margin-top: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--space-border);
+    }
+    .ai-loading { margin-top: 1rem; font-size: 13px; color: var(--aqua); display: flex; align-items: center; gap: 8px; }
+    .ai-error {
+      margin-top: 1rem;
+      font-size: 13px;
+      color: var(--nasa-red);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(252, 61, 33, 0.07);
+      border: 1px solid rgba(252, 61, 33, 0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
     /* ----- Respeto a quien prefiere menos movimiento ----- */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }

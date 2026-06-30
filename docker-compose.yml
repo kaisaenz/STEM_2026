@@ -6,8 +6,11 @@ services:
     container_name: aquanube_web
     network_mode: bridge
     ports:
-      - "8080:80"
-    volumes:
-      # Montamos el directorio actual para que los cambios se reflejen sin reconstruir
-      - .:/usr/share/nginx/html:ro
+      - "8080:8080"
+    environment:
+      # Clave gratuita de Google (Gemini). Consíguela en
+      # https://aistudio.google.com/app/apikey y defínela en tu entorno o en
+      # un archivo .env junto a este compose. Si falta, el análisis responde 503.
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - PORT=8080
     restart: unless-stopped
