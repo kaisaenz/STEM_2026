@@ -1953,6 +1953,49 @@
       padding: 10px 14px;
     }
 
+    /* ----- Consola de parámetros (mini-terminal) ----- */
+    .mini-term { padding: 1rem 1.2rem; margin-bottom: 1.4rem; }
+
+    .mt-head { display: flex; align-items: center; gap: 9px; margin-bottom: 0.7rem; }
+    .mt-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green-pure); box-shadow: 0 0 8px var(--green-pure);
+      animation: pulse 2s infinite;
+    }
+    .mt-title { font-family: var(--font-display); font-size: 11px; letter-spacing: 1px; color: var(--text-primary); }
+    .mt-hint { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+
+    .mt-out {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.65;
+      max-height: 104px;
+      overflow-y: auto;
+      color: var(--text-secondary);
+      margin-bottom: 0.55rem;
+    }
+    .mt-out .ok { color: var(--green-pure); }
+    .mt-out .er { color: var(--nasa-red); }
+    .mt-out .pr { color: var(--text-muted); }
+    .mt-out .vl { color: var(--aqua); }
+
+    .mt-in {
+      display: flex; align-items: center; gap: 9px;
+      border-top: 1px solid var(--space-border);
+      padding-top: 0.55rem;
+    }
+    .mt-prompt { color: var(--aqua); font-family: var(--font-mono); font-weight: 600; }
+    #mt-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    #mt-input::placeholder { color: var(--text-muted); }
+
     /* ----- Respeto a quien prefiere menos movimiento ----- */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }

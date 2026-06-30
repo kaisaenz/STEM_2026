@@ -30,13 +30,14 @@ Con AquaNube no solo buscamos más seguridad al consumir agua, sino también pro
 | Función | Descripción |
 |---|---|
 | **Monitoreo de sensores** | pH, temperatura y turbidez (más TDS y volumen como datos adicionales) en tarjetas y gráficos en vivo. |
-| **Veredicto de aptitud** | Clasifica el agua en *apta para consumo*, *no apta pero reutilizable* o *requiere tratamiento*, con usos alternativos y filtración recomendada. |
+| **Veredicto de aptitud** | Clasifica el agua en *apta para consumo*, *no apta pero reutilizable* o *requiere tratamiento*, con **15+ usos recomendados** y **15+ filtraciones sugeridas** por nivel. |
 | **Análisis por foto (IA)** | Sube o toma una foto del agua y la inteligencia artificial (Google Gemini) recomienda su uso según lo que se ve. |
+| **Consola de parámetros** | Mini-terminal sobre las tarjetas: comandos (`subir/bajar ph·temp·tds·turbidez`, `purifica`, `contamina`…) que cambian los valores de forma gradual y actualizan el veredicto en vivo. |
 | **Modo Demostración** | Genera lecturas de sensores simuladas en vivo para exponer el dashboard sin hardware conectado. |
 | **Escenarios de demostración** | Botones que inyectan situaciones (agua cruda, filtro saturado, alerta de pH, agua filtrada) para mostrar la reacción del sistema. |
 | **De turbio a cristalino** | Comparación visual del agua de entrada vs. la salida según la turbidez medida. |
 | **Hardware real** | Conexión por USB (Web Serial · Arduino) o WiFi (ESP32/NodeMCU). |
-| **Datos** | Registro manual, importación de CSV/JSON, historial y exportación a CSV/JSON/PDF (persiste en el navegador). |
+| **Datos** | Registro manual, **cargar ejemplos**, importación de CSV/JSON, historial y exportación a CSV/JSON/PDF — informe individual o **todas las mediciones** (PDF con logo, vía jsPDF). Persiste en el navegador. |
 
 ---
 
@@ -57,8 +58,9 @@ AquaNube/
 │   │   ├── hardware.js        ← Web Serial (Arduino) + lectura WiFi (ESP32)
 │   │   ├── simulation.js      ← Modo Demostración (sensores simulados)
 │   │   ├── evaluation.js      ← Veredicto de aptitud + escenarios + visual claridad
+│   │   ├── controls.js        ← Consola de parámetros (comandos sobre los sensores)
 │   │   ├── ai.js              ← Análisis del agua por foto (llama al backend)
-│   │   ├── ui.js              ← Tabla, formulario, importar/exportar, terminal
+│   │   ├── ui.js              ← Tabla, formulario, importar/exportar PDF, ejemplos
 │   │   └── main.js            ← Arranque e inicialización
 │   └── img/                   ← logo_aquanube.png, logo_stem.png, equipo.png
 ├── Dockerfile                 ← Imagen Node para servir el sitio + API
@@ -69,6 +71,23 @@ AquaNube/
 ├── HARDWARE_INTEGRACION.md    ← Componentes, conexiones y código de hardware
 └── GUIA_USO.md                ← Manual de uso del dashboard
 ```
+
+---
+
+## 💻 Clonar y usar en otra computadora
+
+Requisitos: **Node.js 18+** (y opcionalmente Docker). Luego:
+
+```bash
+git clone https://github.com/kaisaenz/STEM_2026.git
+cd STEM_2026
+cd server && npm install && cd ..
+node server/server.js
+# Abre http://localhost:8080
+```
+
+El sitio funciona completo sin clave. Para activar el **análisis por foto (IA)**, define
+`GEMINI_API_KEY` (ver más abajo). Los datos registrados se guardan en el navegador de cada equipo.
 
 ---
 

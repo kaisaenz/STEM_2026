@@ -75,7 +75,7 @@ function startDemo() {
   if (demoActive) return;
   demoActive = true;
   setMode('demo');
-  document.getElementById('flow-diagram').classList.add('live');
+  document.getElementById('flow-diagram')?.classList.add('live');
   const btn = document.getElementById('demo-btn');
   if (btn) {
     btn.classList.add('is-on');
@@ -91,7 +91,7 @@ function stopDemo() {
   if (demoTimer) { clearInterval(demoTimer); demoTimer = null; }
   if (!demoActive) return;
   demoActive = false;
-  document.getElementById('flow-diagram').classList.remove('live');
+  document.getElementById('flow-diagram')?.classList.remove('live');
   const btn = document.getElementById('demo-btn');
   if (btn) {
     btn.classList.remove('is-on');

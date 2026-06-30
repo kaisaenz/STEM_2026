@@ -66,57 +66,96 @@ function closeRecordModal(e) {
   document.getElementById('recordModal').classList.remove('show');
 }
 
-function exportarRegistroPDF() {
+// Carga una imagen del propio sitio y la devuelve como dataURL (para el PDF).
+function loadImageData(src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        resolve({ data: c.toDataURL('image/png'), w: img.naturalWidth, h: img.naturalHeight });
+      } catch (e) { resolve(null); }
+    };
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+// Genera el PDF directamente con jsPDF (texto + logo) — fiable y con texto seleccionable.
+async function exportarRegistroPDF() {
   if (window.currentRecordIdx === undefined) return;
   const r = readings[window.currentRecordIdx];
   if (!r) return;
 
-  notif('Generando PDF...', 'Capturando registro individual.');
+  const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF ||
+    (window.jspdf && window.jspdf.default);
+  if (!jsPDFCtor) { notif('Error', 'No se pudo cargar el generador de PDF (revisa tu conexión).'); return; }
+
+  notif('Generando PDF...', 'Creando el reporte de la medición.');
 
   const statusText = r.status === 'optimal' ? 'ÓPTIMO' : (r.status === 'warn' ? 'REVISAR' : 'ALERTA');
+  const statusColor = r.status === 'optimal' ? [0, 150, 80] : (r.status === 'alert' ? [200, 40, 25] : [200, 140, 0]);
 
-  const htmlContent = `
-    <div style="padding: 40px; font-family: 'Helvetica', 'Arial', sans-serif; color: #000; background: #fff; width: 600px; line-height: 1.6;">
-      <h2 style="color: #333; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 20px;">
-        REPORTE DE MEDICIÓN — AQUANUBE
-      </h2>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Número de Registro:</strong> #${window.currentRecordIdx + 1}</p>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Fecha y Hora:</strong> ${new Date(r.ts).toLocaleString('es-BO')}</p>
-      <br>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>pH del Agua:</strong> ${r.ph}</p>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Temperatura:</strong> ${r.temp} °C</p>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>TDS (Sólidos):</strong> ${r.tds} ppm</p>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Turbidez:</strong> ${r.turb} NTU</p>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Volumen Procesado:</strong> ${r.vol} mL</p>
-      <br>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Etapa del Filtro:</strong> ${etapaMap[r.stage] || r.stage}</p>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Claridad Visual:</strong> <span style="text-transform: capitalize;">${r.claridad || '—'}</span></p>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Olor:</strong> <span style="text-transform: capitalize;">${r.olor || '—'}</span></p>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Sensor de Origen:</strong> <span style="text-transform: capitalize;">${r.sensor || '—'}</span></p>
-      <p style="margin: 5px 0; font-size: 14px;"><strong>Estado de Calidad:</strong> ${statusText}</p>
-      <br>
-      ${r.obs ? `<div style="margin-top: 10px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9;">
-        <strong>Observaciones Extra:</strong><br><span style="font-size: 13px;">${r.obs}</span>
-      </div>` : ''}
-      <div style="margin-top: 40px; font-size: 10px; color: #777; border-top: 1px solid #eee; padding-top: 10px;">
-        Generado automáticamente por el Sistema AQUANUBE
-      </div>
-    </div>
-  `;
+  const doc = new jsPDFCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const pageW = 210;
+  const left = 24;
+  let y = 18;
 
-  const opt = {
-    margin: 10,
-    filename: 'AQUANUBE_Reporte_' + Date.now() + '.pdf',
-    image: { type: 'jpeg', quality: 1.0 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+  // Logo (centrado)
+  const logo = await loadImageData('/assets/img/logo_aquanube.png');
+  if (logo) {
+    const w = 32, h = w * (logo.h / logo.w);
+    doc.addImage(logo.data, 'PNG', (pageW - w) / 2, y, w, h);
+    y += h + 4;
+  }
 
-  html2pdf().set(opt).from(htmlContent).save().then(() => {
-    notif('Descarga completa', 'Registro exportado a PDF.');
-  }).catch(() => {
-    notif('Error', 'No se pudo generar el PDF.');
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor(11, 61, 145);
+  doc.text('REPORTE DE MEDICIÓN — AQUANUBE', pageW / 2, y, { align: 'center' }); y += 7;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(110);
+  doc.text('Guardianes de la Ciencia · Olimpiadas STEM+ Bolivia 2026', pageW / 2, y, { align: 'center' }); y += 10;
+
+  // Línea separadora
+  doc.setDrawColor(200); doc.line(left, y, pageW - left, y); y += 9;
+
+  const rows = [
+    ['Número de registro', '#' + (window.currentRecordIdx + 1)],
+    ['Fecha y hora', new Date(r.ts).toLocaleString('es-BO')],
+    ['pH del agua', String(r.ph)],
+    ['Temperatura', r.temp + ' °C'],
+    ['TDS (sólidos)', r.tds + ' ppm'],
+    ['Turbidez', r.turb + ' NTU'],
+    ['Volumen procesado', r.vol + ' mL'],
+    ['Etapa del filtro', etapaMap[r.stage] || r.stage],
+    ['Claridad visual', r.claridad || '—'],
+    ['Olor', r.olor || '—'],
+    ['Sensor de origen', r.sensor || '—']
+  ];
+
+  doc.setFontSize(11);
+  const labelX = left, valueX = left + 60, lineH = 8.5;
+  rows.forEach(([k, v]) => {
+    doc.setFont('helvetica', 'bold'); doc.setTextColor(120); doc.text(k + ':', labelX, y);
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(25); doc.text(String(v), valueX, y);
+    y += lineH;
   });
+
+  // Estado de calidad (resaltado)
+  doc.setFont('helvetica', 'bold'); doc.setTextColor(120); doc.text('Estado de calidad:', labelX, y);
+  doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]); doc.text(statusText, valueX, y); y += lineH + 2;
+
+  if (r.obs) {
+    doc.setFont('helvetica', 'bold'); doc.setTextColor(120); doc.text('Observaciones:', labelX, y); y += 6;
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(25);
+    doc.text(doc.splitTextToSize(String(r.obs), pageW - 2 * left), labelX, y);
+  }
+
+  doc.setFontSize(8); doc.setTextColor(150);
+  doc.text('Generado automáticamente por AquaNube · ' + new Date().toLocaleString('es-BO'), pageW / 2, 287, { align: 'center' });
+
+  doc.save('AQUANUBE_Reporte_' + Date.now() + '.pdf');
+  notif('Descarga completa', 'Reporte exportado a PDF.');
 }
 
 function generarPDFIndividual() {
@@ -341,9 +380,105 @@ function dl(name, content, type) {
   a.click();
 }
 
+// ======= EJEMPLOS DE LLENADO =======
+const EJEMPLOS = [
+  { ph: 7.1, temp: 23.0, tds: 120, turb: 0.4, vol: 800, stage: 'hervida', claridad: 'cristalina', olor: 'ninguno', sensor: 'manual', obs: 'Agua de lluvia tras filtración completa y hervido.' },
+  { ph: 7.3, temp: 22.4, tds: 180, turb: 0.6, vol: 750, stage: 'arena', claridad: 'cristalina', olor: 'ninguno', sensor: 'manual', obs: 'Agua de río filtrada con lienzo, carbón y arena.' },
+  { ph: 7.0, temp: 23.5, tds: 210, turb: 0.5, vol: 700, stage: 'carbon', claridad: 'cristalina', olor: 'ninguno', sensor: 'laboratorio', obs: 'Salida tras carbón activado.' },
+  { ph: 7.6, temp: 24.2, tds: 340, turb: 0.9, vol: 600, stage: 'arena', claridad: 'ligeramente_turbia', olor: 'leve', sensor: 'manual', obs: 'Agua de pozo; TDS algo elevado, revisar.' },
+  { ph: 6.0, temp: 26.1, tds: 720, turb: 4.8, vol: 500, stage: 'sin_filtro', claridad: 'turbia', olor: 'notable', sensor: 'manual', obs: 'Agua gris cruda sin tratar (entrada del sistema).' }
+];
+
+function cargarEjemplos() {
+  const base = Date.now();
+  EJEMPLOS.forEach((e, i) => {
+    // timestamps repartidos hacia atrás (una hora entre cada uno)
+    const r = { ...e, ts: new Date(base - (EJEMPLOS.length - 1 - i) * 3600000).toISOString(), status: '' };
+    r.status = computeStatus(r);
+    readings.push(r);
+  });
+  saveReadings();
+  renderTable();
+  const last = readings[readings.length - 1];
+  updCards(last.ph, last.temp, last.tds, last.turb, last.vol);
+  updateChartsWithNewData(last);
+  checkAlerts(last);
+  notif('Ejemplos cargados', EJEMPLOS.length + ' mediciones añadidas a la base de datos');
+  termLog('Cargados ' + EJEMPLOS.length + ' ejemplos en la base de datos', 'ok');
+}
+
+// ======= EXPORTAR TODO A PDF =======
+async function exportarTodoPDF() {
+  if (!readings.length) { notif('Sin datos', 'No hay mediciones para exportar.'); return; }
+  const jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFCtor) { notif('Error', 'No se pudo cargar el generador de PDF (revisa tu conexión).'); return; }
+
+  notif('Generando PDF...', 'Creando el reporte de todas las mediciones.');
+  const doc = new jsPDFCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const pageW = 210, left = 14;
+  let y = 16;
+
+  const logo = await loadImageData('/assets/img/logo_aquanube.png');
+  if (logo) {
+    const w = 24, h = w * (logo.h / logo.w);
+    doc.addImage(logo.data, 'PNG', left, y, w, h);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(15); doc.setTextColor(11, 61, 145);
+    doc.text('AQUANUBE — Registro de mediciones', left + w + 6, y + 8);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(110);
+    doc.text('Guardianes de la Ciencia · ' + new Date().toLocaleString('es-BO'), left + w + 6, y + 14);
+    y += h + 4;
+  } else { y += 6; }
+
+  doc.setFontSize(8); doc.setTextColor(120);
+  doc.text('Total de mediciones: ' + readings.length, left, y); y += 5;
+
+  // Cabecera de tabla
+  const cols = [
+    ['#', 10], ['Fecha', 40], ['pH', 14], ['T°C', 14], ['TDS', 16],
+    ['Turb', 16], ['Vol', 16], ['Etapa', 30], ['Estado', 26]
+  ];
+  const estadoTxt = s => s === 'optimal' ? 'OPTIMO' : (s === 'alert' ? 'ALERTA' : 'REVISAR');
+
+  function header() {
+    doc.setFillColor(11, 61, 145); doc.rect(left, y, pageW - 2 * left, 7, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(255);
+    let x = left + 2;
+    cols.forEach(([t, w]) => { doc.text(t, x, y + 5); x += w; });
+    y += 7;
+  }
+  header();
+
+  doc.setFont('helvetica', 'normal'); doc.setTextColor(30);
+  readings.forEach((r, i) => {
+    if (y > 282) { doc.addPage(); y = 16; header(); doc.setFont('helvetica', 'normal'); doc.setTextColor(30); }
+    if (i % 2 === 0) { doc.setFillColor(244, 247, 250); doc.rect(left, y, pageW - 2 * left, 6, 'F'); }
+    const vals = [
+      String(i + 1),
+      new Date(r.ts).toLocaleString('es-BO', { dateStyle: 'short', timeStyle: 'short' }),
+      String(r.ph), String(r.temp), String(r.tds), String(r.turb), String(r.vol),
+      (etapaMap[r.stage] || r.stage), estadoTxt(r.status)
+    ];
+    let x = left + 2;
+    doc.setFontSize(8);
+    vals.forEach((v, c) => {
+      if (c === 8) { const col = r.status === 'optimal' ? [0, 140, 70] : (r.status === 'alert' ? [200, 40, 25] : [200, 140, 0]); doc.setTextColor(col[0], col[1], col[2]); }
+      else doc.setTextColor(30);
+      doc.text(String(v).substring(0, 24), x, y + 4.3);
+      x += cols[c][1];
+    });
+    y += 6;
+  });
+
+  doc.setFontSize(8); doc.setTextColor(150);
+  doc.text('Generado automáticamente por AquaNube', pageW / 2, 290, { align: 'center' });
+  doc.save('AQUANUBE_Mediciones_' + Date.now() + '.pdf');
+  notif('Descarga completa', readings.length + ' mediciones exportadas a PDF.');
+}
+
 // ======= TERMINAL =======
 function termLog(msg, type = 'pr') {
   const t = document.getElementById('terminal');
+  if (!t) return; // la sección/terminal puede no estar presente
   const ts = new Date().toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const d = document.createElement('div'); d.className = 'tl';
   d.innerHTML = `<span class="ts">[${ts}]</span> <span class="${type}">${msg}</span>`;
@@ -369,11 +504,11 @@ function procCmd(c) {
     else if (c.includes('DEMO')) { if (typeof toggleDemo === 'function') toggleDemo(); }
     else if (c.includes('FILTRO ON')) {
       termLog('Secuencia de filtración activada...', 'ok');
-      document.getElementById('flow-diagram').classList.add('anim-active', 'live');
+      document.getElementById('flow-diagram')?.classList.add('anim-active', 'live');
     }
     else if (c.includes('FILTRO OFF')) {
       termLog('Sistema de filtración detenido', 'er');
-      document.getElementById('flow-diagram').classList.remove('anim-active', 'live');
+      document.getElementById('flow-diagram')?.classList.remove('anim-active', 'live');
     }
     else if (c.includes('RESET')) termLog('Sistema reiniciado', 'ok');
     else if (c.includes('HELP')) termLog('Comandos: READ, STATUS, DEMO, FILTRO ON/OFF, RESET, HELP', 'pr');
@@ -395,7 +530,8 @@ function checkAlerts(r) {
 
 // ======= INTERVALO DE LECTURA =======
 function updInterval(v) {
-  document.getElementById('iv-lbl').textContent = v + ' seg';
+  const lbl = document.getElementById('iv-lbl');
+  if (lbl) lbl.textContent = v + ' seg';
   termLog('Intervalo actualizado: ' + v + ' segundos', 'vl');
   if (typeof restartDemoIfActive === 'function') restartDemoIfActive();
 }

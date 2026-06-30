@@ -12,7 +12,7 @@
   <link rel="icon" type="image/png" href="/assets/img/logo_aquanube.png">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
@@ -41,7 +41,6 @@
       <a href="#inicio" class="active">Inicio</a>
       <a href="#dashboard">Dashboard</a>
       <a href="#datos">Datos</a>
-      <a href="#sistema">Sistema</a>
       <a href="#impacto">Impacto</a>
       <a href="#mision">Misión</a>
     </div>
@@ -227,6 +226,23 @@
       <div id="ai-result"></div>
     </div>
 
+    <!-- CONSOLA DE PARÁMETROS -->
+    <div class="card mini-term fi">
+      <div class="mt-head">
+        <span class="mt-dot"></span>
+        <span class="mt-title">CONSOLA DE PARÁMETROS</span>
+        <span class="mt-hint">escribe HELP</span>
+      </div>
+      <div class="mt-out" id="mt-out">
+        <div><span class="pr">Lista de comandos para uso de sensores · escribe HELP</span></div>
+      </div>
+      <div class="mt-in">
+        <span class="mt-prompt">&gt;</span>
+        <input id="mt-input" type="text" autocomplete="off" spellcheck="false"
+          placeholder="" onkeydown="ptKey(event)">
+      </div>
+    </div>
+
     <div class="metrics-grid fi">
       <div class="card mc ph">
         <div class="mc-icon"><i class="fa-solid fa-flask"></i></div>
@@ -394,7 +410,10 @@
                 placeholder="Añade detalles o anomalías aquí..."></div>
           </div>
           <div
-            style="display:flex; justify-content:flex-end; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
+            style="display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
+            <button type="button" class="btn btn-s" onclick="cargarEjemplos()"
+              style="padding: 14px 22px; font-size: 12px; letter-spacing: 1px; border-radius: 8px;"><i
+                class="fa-solid fa-flask-vial"></i> CARGAR EJEMPLOS</button>
             <button type="submit" class="btn btn-p"
               style="padding: 14px 28px; font-size: 13px; letter-spacing: 1.5px; box-shadow: 0 6px 20px rgba(0, 212, 255, 0.25); border-radius: 8px;"><i
                 class="fa-solid fa-satellite-dish"></i> GUARDAR MEDICIÓN EN BASE DE DATOS</button>
@@ -484,133 +503,10 @@
           <button class="btn btn-p" onclick="generarPDFIndividual()" style="width:100%; padding:8px;"><i
               class="fa-solid fa-download"></i> DESCARGAR</button>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- SISTEMA / ARDUINO -->
-  <section class="section" id="sistema">
-    <div class="fi">
-      <div class="sec-title">Control del Sistema y Terminal Arduino</div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;" class="fi">
-      <!-- TERMINAL -->
-      <div class="card term-wrap">
-        <div class="term-bar">
-          <div class="dots">
-            <div class="dot r"></div>
-            <div class="dot y"></div>
-            <div class="dot g"></div>
-          </div>
-          <span class="term-ttl" id="serial-status">AQUANUBE — Desconectado</span>
-          <button class="btn btn-p" style="margin-left:auto; font-size:9px; padding:5px 10px;"
-            onclick="connectSerial()"><i class="fa-brands fa-usb"></i> CONECTAR SENSOR</button>
-        </div>
-        <div class="term-body" id="terminal">
-          <div class="tl"><span class="ts">[00:00:01]</span> <span class="ok">Sistema AQUANUBE v1.0 iniciado</span>
-          </div>
-          <div class="tl"><span class="ts">[00:00:02]</span> <span class="pr">→</span> Sensor pH: calibrado OK</div>
-          <div class="tl"><span class="ts">[00:00:03]</span> <span class="pr">→</span> Sensor TDS: calibrado OK</div>
-          <div class="tl"><span class="ts">[00:00:04]</span> <span class="pr">→</span> Sensor turbidez: calibrado OK
-          </div>
-          <div class="tl"><span class="ts">[00:00:06]</span> <span class="pr">→</span> pH: <span class="vl">7.1</span> |
-            TDS: <span class="vl">134ppm</span> | Turb: <span class="vl">0.4 NTU</span></div>
-          <div class="tl"><span class="ts">[00:00:08]</span> <span class="ok">Filtro lienzo/gasa: ACTIVO</span></div>
-          <div class="tl"><span class="ts">[00:00:09]</span> <span class="ok">Filtro carbón activado: ACTIVO</span>
-          </div>
-          <div class="tl"><span class="ts">[00:00:10]</span> <span class="ok">Filtro arena fina: ACTIVO</span></div>
-          <div class="tl"><span class="ts">[00:00:12]</span> <span class="ok">Agua clara — apta para
-              reutilización</span></div>
-        </div>
-        <div class="term-in">
-          <span class="term-pr">$</span>
-          <input class="term-input" type="text" id="t-input" placeholder="READ, STATUS, FILTRO, RESET, HELP..."
-            onkeydown="termKey(event)">
-        </div>
-      </div>
-
-      <!-- CONTROLES + DIAGRAMA -->
-      <div style="display:flex;flex-direction:column;gap:14px;">
-        <div class="card" style="padding:1.3rem;">
-          <div class="p-head" style="margin-bottom:0.9rem;">
-            <span class="p-title">FLUJO DE FILTRACIÓN AQUANUBE</span>
-            <span class="p-badge">ACTIVO</span>
-          </div>
-          <div class="flow" id="flow-diagram">
-            <div class="flow-row">
-              <div class="fnode src">
-                <div class="fnode-ico">💧</div>
-                <div class="fnode-lbl">Fuente Agua</div>
-              </div>
-              <div class="farrow"><i class="fa-solid fa-arrow-right"></i></div>
-              <div class="fnode src">
-                <div class="fnode-ico">🪣</div>
-                <div class="fnode-lbl">Pecera/Vaso</div>
-              </div>
-            </div>
-            <div style="color:var(--text-muted);font-size:12px;margin:3px 0;"><i class="fa-solid fa-arrow-down"></i>
-            </div>
-            <div class="flow-row">
-              <div class="fnode act">
-                <div class="fnode-ico">🧵</div>
-                <div class="fnode-lbl">Lienzo/Gasa</div>
-              </div>
-              <div class="farrow"><i class="fa-solid fa-arrow-right"></i></div>
-              <div class="fnode act">
-                <div class="fnode-ico">⚫</div>
-                <div class="fnode-lbl">C. Activado</div>
-              </div>
-            </div>
-            <div style="color:var(--text-muted);font-size:12px;margin:3px 0;"><i class="fa-solid fa-arrow-down"></i>
-            </div>
-            <div class="flow-row">
-              <div class="fnode act">
-                <div class="fnode-ico">🏖️</div>
-                <div class="fnode-lbl">Arena Fina</div>
-              </div>
-              <div class="farrow"><i class="fa-solid fa-arrow-right"></i></div>
-              <div class="fnode out">
-                <div class="fnode-ico">🔥</div>
-                <div class="fnode-lbl">Hervida</div>
-              </div>
-            </div>
-            <div style="color:var(--text-muted);font-size:12px;margin:3px 0;"><i class="fa-solid fa-arrow-down"></i>
-            </div>
-            <div class="flow-row">
-              <div class="fnode out">
-                <div class="fnode-ico">💧</div>
-                <div class="fnode-lbl">Agua Limpia</div>
-              </div>
-              <div class="farrow"><i class="fa-solid fa-arrow-right"></i></div>
-              <div class="fnode out">
-                <div class="fnode-ico">🌿</div>
-                <div class="fnode-lbl">Reutilización</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card" style="padding:1.3rem;">
-          <div class="p-title" style="margin-bottom:0.9rem;">CONTROLES DEL SISTEMA</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:0.9rem;">
-            <button class="btn btn-p" style="font-size:9px;padding:9px;" onclick="cmd('READ ALL')"><i
-                class="fa-solid fa-rotate"></i>LEER</button>
-            <button class="btn btn-s" style="font-size:9px;padding:9px;" onclick="cmd('STATUS')"><i
-                class="fa-solid fa-info"></i>STATUS</button>
-            <button class="btn btn-p" style="font-size:9px;padding:9px;" onclick="cmd('FILTRO ON')"><i
-                class="fa-solid fa-filter"></i>FILTRO ON</button>
-            <button class="btn btn-s" style="font-size:9px;padding:9px;" onclick="cmd('FILTRO OFF')"><i
-                class="fa-solid fa-filter"></i>FILTRO OFF</button>
-            <button class="btn btn-s" style="font-size:9px;padding:9px;grid-column:span 2;" onclick="cmd('RESET')"><i
-                class="fa-solid fa-power-off"></i>REINICIAR SISTEMA</button>
-          </div>
-          <div class="fg">
-            <label class="flabel">Intervalo de lectura (seg)</label>
-            <input type="range" id="iv-range" min="1" max="30" step="1" value="3" oninput="updInterval(this.value)">
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--aqua);" id="iv-lbl">3 seg</span>
-          </div>
+        <div class="card exp" onclick="exportarTodoPDF()">
+          <div class="exp-ico"><i class="fa-solid fa-file-pdf"></i></div>
+          <div class="exp-title">EXPORTAR TODO (PDF)</div>
+          <div class="exp-desc">Reporte con todas las mediciones de la base de datos</div>
         </div>
       </div>
     </div>
@@ -793,7 +689,7 @@
   <section class="section fi" id="equipo" style="text-align:center;">
     <span class="sec-tag">Guardianes de la Ciencia</span>
     <div class="sec-title">Nuestro Equipo</div>
-    <img src="/assets/img/equipo.png?v=2" alt="Equipo Guardianes de la Ciencia"
+    <img src="/assets/img/equipo.png?v=3" alt="Equipo Guardianes de la Ciencia"
       style="max-width: 90%; max-height: 460px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2); border: 2px solid rgba(0, 212, 255, 0.3); object-fit: cover;">
     <p style="margin-top:1.4rem; color:var(--text-secondary); font-size:0.95rem;">Olimpiadas STEM+ Bolivia 2026 ·
       Santa Cruz de la Sierra</p>
@@ -807,7 +703,7 @@
       STEM Bolivia 2026</div>
     <div class="f-links">
       <a href="#inicio">Inicio</a><a href="#dashboard">Dashboard</a><a href="#datos">Datos</a>
-      <a href="#sistema">Sistema</a><a href="#impacto">Impacto</a><a href="#mision">Misión</a>
+      <a href="#impacto">Impacto</a><a href="#mision">Misión</a>
     </div>
     <div class="f-copy">© 2026 AQUANUBE · Guardianes de la Ciencia · Santa Cruz, Bolivia
     </div>
@@ -852,6 +748,7 @@
   <script src="/assets/js/simulation.js"></script>
   <script src="/assets/js/evaluation.js"></script>
   <script src="/assets/js/ai.js"></script>
+  <script src="/assets/js/controls.js"></script>
   <script src="/assets/js/ui.js"></script>
   <script src="/assets/js/main.js"></script>
 </body>

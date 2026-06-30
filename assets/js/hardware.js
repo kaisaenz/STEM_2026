@@ -12,7 +12,8 @@ async function connectSerial() {
     await port.open({ baudRate: 9600 });
     if (typeof stopDemo === 'function') stopDemo();      // exclusión mutua con la demo
     if (typeof setMode === 'function') setMode('hardware');
-    document.getElementById('serial-status').textContent = 'Conectado — 9600 baud';
+    const ss = document.getElementById('serial-status');
+    if (ss) ss.textContent = 'Conectado — 9600 baud';
     termLog('✅ Arduino conectado exitosamente.', 'ok');
     const textDecoder = new TextDecoderStream();
     port.readable.pipeTo(textDecoder.writable);
