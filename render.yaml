@@ -19,5 +19,4 @@ services:
       # La clave de IA NO se guarda en el repo: se define en el panel de Render.
       - key: GEMINI_API_KEY
         sync: false
-      - key: PORT
-        value: "8080"
+      # PORT lo inyecta Render automáticamente; el servidor escucha en process.env.PORT.
